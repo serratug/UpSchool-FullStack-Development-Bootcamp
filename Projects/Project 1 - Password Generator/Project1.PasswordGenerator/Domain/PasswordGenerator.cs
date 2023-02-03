@@ -1,9 +1,11 @@
+using System.Reflection.Metadata.Ecma335;
+
 namespace Project1.PasswordGenerator.Domain;
 
 public class PasswordGenerator
 {
-    private List<char> CharPool { get; set; }
-    private List<char> Password { get; set; }
+    private List<char> CharPool { get; }
+    private List<char> Password { get; }
 
     private readonly Random _random;
 
@@ -18,9 +20,9 @@ public class PasswordGenerator
     
     public string Generate()
     {
-        PrintWelcomeMessage();
-        CreateCharPool();
-        int charCount = AskForPasswordLength();
+        Messages.PrintWelcomeMessage();
+        CreateCharPool(); // By asking necessary questions to the user
+        int charCount = AskForPasswordLength(message:null);
 
         for (int i = 0; i < charCount; i++)
         {
@@ -33,29 +35,45 @@ public class PasswordGenerator
     
     private void CreateCharPool()
     {
-        if (AskForNumbers())
+        var yesCheck = 0;
+        
+        if (ReadAnswer(Messages.Questions.IncludeNumbers))
         {
-            CharPool.AddRange("0123456789");
+            CharPool.AddRange(CharTypes.Numbers);
+            yesCheck++;
         }
 
-        if (AskForLowercaseLetters())
+        if (ReadAnswer(Messages.Questions.IncludeLowercaseLetters))
         {
-            CharPool.AddRange("abcdefghijklmnopqrstuvwxyz");
+            CharPool.AddRange(CharTypes.LowercaseLetters);
+            yesCheck++;
         }
         
-        if (AskForUppercaseLetters())
+        if (ReadAnswer(Messages.Questions.IncludeUppercaseLetters))
         {
-            CharPool.AddRange("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+            CharPool.AddRange(CharTypes.UppercaseLetters);
+            yesCheck++;
         }
         
-        if (AskForSpecialChars())
+        if (ReadAnswer(Messages.Questions.IncludeSpecialChars))
         {
-            CharPool.AddRange("[$&+,:;=?@#|'<>.-^*()%!]");
+            CharPool.AddRange(CharTypes.SpecialChars);
+            yesCheck++;
         }
+
+        // Check if not answered as 'yes' at least once
+        if (yesCheck == 0)
+        {
+            Console.WriteLine(Messages.Errors.AllNo);
+            CreateCharPool();
+        }
+
     }
 
-    private static bool ReadAnswer()
+    private static bool ReadAnswer(string question)
     {
+        Console.WriteLine(question);
+        
         var answer = Console.ReadLine();
         
         switch (answer)
@@ -67,48 +85,27 @@ public class PasswordGenerator
             case "n":
                 return false;
             default:
-                Console.WriteLine("Invalid Input! Try again.");
-                return ReadAnswer();
+                Console.WriteLine(Messages.Errors.InvalidInput);
+                return ReadAnswer(question);
         }
     }
 
-    private static bool AskForNumbers()
+    private static int AskForPasswordLength(string? message)
     {
-        Console.WriteLine("Do you want to include numbers? (Y/N)");
-        return ReadAnswer();
-    }
-
-    private static bool AskForLowercaseLetters()
-    {
-        Console.WriteLine("Do you want to include lowercase characters? (Y/N)");
-        return ReadAnswer();
-    }
-    
-    private static bool AskForUppercaseLetters()
-    {
-        Console.WriteLine("Do you want to include uppercase characters? (Y/N)");
-        return ReadAnswer();
-    }
-    
-    private static bool AskForSpecialChars()
-    {
-        Console.WriteLine("Do you want to include special characters? (Y/N)");
-        return ReadAnswer();
-    }
-    
-    private static int AskForPasswordLength()
-    {
-        Console.WriteLine("How long do you want to keep your password lenght?");
+        // If the method called with an error message
+        if (message != null) Console.WriteLine(message);
+        
+        Console.WriteLine(Messages.Questions.PasswordLenght);
         var answer = Console.ReadLine();
-        return Convert.ToInt32(answer);
-    }
-
-    private static void PrintWelcomeMessage()
-    {
-        Console.WriteLine("************************************************");
-        Console.WriteLine("Welcome to the P A S S W O R D M A N A G E R");
-        Console.WriteLine("************************************************");
+        
+        // Check if user typed an integer
+        if (!int.TryParse(answer, out var length))
+            return AskForPasswordLength(Messages.Errors.InvalidInput);
+        
+        // Check if user typed a positive integer
+        if (length < 1) return AskForPasswordLength(Messages.Errors.NegativeInt);
+        
+        return length;
     }
     
-
 }
