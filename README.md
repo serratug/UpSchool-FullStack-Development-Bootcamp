@@ -1,1 +1,1 @@
-# UpSchoolFSD
+# UpSchool-FullStack-Development-Bootcamp
