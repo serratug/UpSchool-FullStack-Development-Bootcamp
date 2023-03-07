@@ -25,7 +25,7 @@ builder.Services.AddScoped<IToasterService, BlazoredToastService>();
 
 //builder.Services.AddSingleton(typeof(LoggerBase));
 
-//builder.Services.AddSingleton<IUrlHelperService>(new UrlHelperService(titanicFluteApiUrl));
+builder.Services.AddSingleton<IUrlHelperService>(new UrlHelperService(titanicFluteApiUrl));
 
 builder.Services.AddBlazoredLocalStorage(config =>
 {
