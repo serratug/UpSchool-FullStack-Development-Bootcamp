@@ -24,8 +24,4 @@ public class PasswordCareTaker
         return passwordMementoList.Count;
     }
 
-    public List<PasswordMemento> GetList()
-    {
-        return passwordMementoList;
-    }
 }
