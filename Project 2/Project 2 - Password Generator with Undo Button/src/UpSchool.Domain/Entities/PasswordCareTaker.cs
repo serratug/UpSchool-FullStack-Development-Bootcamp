@@ -17,7 +17,7 @@ public class PasswordCareTaker
         return lastState;
     }
 
-    public int GetStateCount()
+    public int GetStateCount() 
     {
         return passwordMementoList.Count;
     }

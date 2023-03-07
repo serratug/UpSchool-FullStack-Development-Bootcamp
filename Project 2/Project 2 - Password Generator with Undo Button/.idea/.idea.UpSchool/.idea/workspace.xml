@@ -8,7 +8,6 @@
     <list default="true" id="891ac973-4a0e-4b89-a004-76873f156521" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.UpSchool/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.UpSchool/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/UpSchool.Domain/Entities/PasswordCareTaker.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/UpSchool.Domain/Entities/PasswordCareTaker.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/UpSchool.Wasm/Common/Utilities/CssUtilities.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/UpSchool.Wasm/Common/Utilities/CssUtilities.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/UpSchool.Wasm/Components/GeneratePasswordCard.razor" beforeDir="false" afterPath="$PROJECT_DIR$/src/UpSchool.Wasm/Components/GeneratePasswordCard.razor" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/UpSchool.Wasm/Pages/PasswordGeneratorPage.razor" beforeDir="false" afterPath="$PROJECT_DIR$/src/UpSchool.Wasm/Pages/PasswordGeneratorPage.razor" afterDir="false" />
     </list>
@@ -83,7 +82,7 @@
       <option name="presentableId" value="Default" />
       <updated>1678180575774</updated>
       <workItem from="1678180578688" duration="837000" />
-      <workItem from="1678183853992" duration="337000" />
+      <workItem from="1678183853992" duration="1649000" />
     </task>
     <servers />
   </component>
