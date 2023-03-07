@@ -12,10 +12,8 @@ public class PasswordCareTaker
     public PasswordMemento Pop()
     {
         PasswordMemento lastState = passwordMementoList.Last();
+        passwordMementoList.Remove(lastState);
         
-        if (GetStateCount() > 1)
-            passwordMementoList.Remove(lastState);
-
         return lastState;
     }
 
@@ -23,5 +21,4 @@ public class PasswordCareTaker
     {
         return passwordMementoList.Count;
     }
-
 }

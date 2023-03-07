@@ -20,5 +20,13 @@
                     break;
             }
         }
+
+        public static string GetCssForUndoIcon(int count)
+        {
+            if (count == 0)
+                return "text-secondary";
+            else
+                return "clickable";
+        }
     }
 }
