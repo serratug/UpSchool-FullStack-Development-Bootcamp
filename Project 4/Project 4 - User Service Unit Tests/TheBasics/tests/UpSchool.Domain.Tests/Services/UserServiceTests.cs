@@ -146,11 +146,17 @@ namespace UpSchool.Domain.Tests.Services
             var userNullEmail = new User()
             {
                 Id = Guid.NewGuid(),
+                FirstName = "Serra",
+                LastName = "Tug",
+                Age = 28
             };
             
             var userEmptyEmail = new User()
             {
                 Id = Guid.NewGuid(),
+                FirstName = "Serra",
+                LastName = "Tug",
+                Age = 28,
                 Email = String.Empty
             };
 
@@ -170,9 +176,11 @@ namespace UpSchool.Domain.Tests.Services
         
             IUserService userService = new UserManager(userRepositoryMock);
 
-            var result = Assert.ThrowsAsync<ArgumentNullException>(() => userService.UpdateAsync(null, cancellationSource.Token));
+            var exception = await Assert.ThrowsAsync<ArgumentNullException>(() => userService.UpdateAsync(null, cancellationSource.Token));
             
-            Assert.Equal("User cannot be null.", result.Exception.Message);
+            Assert.Equal("user", exception.ParamName);
+            Assert.Equal("User cannot be null. (Parameter 'user')", exception.Message);
+            // ArgumentNullException gelen mesaja paramname ekledigi icin bu sekilde kontrol etmek gerekti.
         }
 
         [Fact]
@@ -184,8 +192,8 @@ namespace UpSchool.Domain.Tests.Services
 
             List<User> userList = new List<User>()
             {
-                new User(){ Id = Guid.NewGuid() },
-                new User() { Id = Guid.NewGuid() }
+                new User(){ Id = Guid.NewGuid(), FirstName = "Serra", LastName = "Tug", Age = 28, Email = "st@example.com"},
+                new User() { Id = Guid.NewGuid(), FirstName = "Alper", LastName = "Tunga", Age = 28, Email = "altudev@example.com" }
             };
 
             A.CallTo(() =>  userRepositoryMock.GetAllAsync(cancellationSource.Token))

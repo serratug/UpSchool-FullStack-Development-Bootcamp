@@ -16,6 +16,10 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/10616addb6e783cc90acec53f9316ccec363cf7a57b27055a964beafd4b32d95/ArgumentNullException.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/d7e0d612792e6c8a7e505ae0b5ec548273d455f1ee76d1d0b44835e3cf/ArgumentException.cs" root0="SKIP_HIGHLIGHTING" />
+  </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
@@ -171,6 +175,7 @@
       <workItem from="1684358727672" duration="231000" />
       <workItem from="1684437878237" duration="4605000" />
       <workItem from="1684525479561" duration="1353000" />
+      <workItem from="1684584580347" duration="2181000" />
     </task>
     <servers />
   </component>
