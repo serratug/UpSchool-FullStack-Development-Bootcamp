@@ -70,7 +70,7 @@ namespace UpSchool.Domain.Services
 
             if (string.IsNullOrEmpty(user.Email))
             {
-                throw new ArgumentException("Name cannot be null or empty.");
+                throw new ArgumentException("Email cannot be null or empty.");
             }
 
             var result = await _userRepository.UpdateAsync(user, cancellationToken);

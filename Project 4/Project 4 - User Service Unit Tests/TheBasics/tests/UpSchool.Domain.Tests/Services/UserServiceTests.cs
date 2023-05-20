@@ -42,8 +42,12 @@ namespace UpSchool.Domain.Tests.Services
         
             IUserService userService = new UserManager(userRepositoryMock);
 
-            await  Assert.ThrowsAsync<ArgumentException>( () => userService.AddAsync("Elon", "Musk", 18, null, cancellationSource.Token));
-            await Assert.ThrowsAsync<ArgumentException>( () => userService.AddAsync("Alper", "Tunga", 18, String.Empty, cancellationSource.Token));
+            var exceptionNull = await  Assert.ThrowsAsync<ArgumentException>( () => userService.AddAsync("Elon", "Musk", 18, null, cancellationSource.Token));
+            var exceptionEmpty = await Assert.ThrowsAsync<ArgumentException>( () => userService.AddAsync("Alper", "Tunga", 18, String.Empty, cancellationSource.Token));
+            
+            Assert.Equal("Email cannot be null or empty.", exceptionNull.Message);
+            Assert.Equal("Email cannot be null or empty.", exceptionEmpty.Message);
+            
         }
         
         [Fact]
@@ -94,13 +98,17 @@ namespace UpSchool.Domain.Tests.Services
         [Fact]
         public async Task DeleteAsync_ShouldThrowException_WhenUserDoesntExists()
         {
+            // DeleteAsync icindeki empty id kontrolunu test etmek istedigimizi dusunerek yaptim.
+            
             var userRepositoryMock = A.Fake<IUserRepository>();
         
             var cancellationSource = new CancellationTokenSource();
         
             IUserService userService = new UserManager(userRepositoryMock);
             
-            await  Assert.ThrowsAsync<ArgumentException>( () => userService.DeleteAsync(Guid.Empty, cancellationSource.Token));
+            var exception = await  Assert.ThrowsAsync<ArgumentException>( () => userService.DeleteAsync(Guid.Empty, cancellationSource.Token));
+
+            Assert.Equal("id cannot be empty.", exception.Message);
         }
 
         [Fact]
@@ -114,10 +122,16 @@ namespace UpSchool.Domain.Tests.Services
             
             var user = new User()
             {
-                Id = Guid.Empty
+                Id = Guid.Empty,
+                FirstName = "Serra",
+                LastName = "Tug",
+                Age = 28,
+                Email = "serratug@example.com"
             };
 
-            await Assert.ThrowsAsync<ArgumentException>(() => userService.UpdateAsync(user, cancellationSource.Token));
+            var exception = await Assert.ThrowsAsync<ArgumentException>(() => userService.UpdateAsync(user, cancellationSource.Token));
+            
+            Assert.Equal("User Id cannot be null or empty.", exception.Message);
         }
 
         [Fact]
@@ -140,8 +154,11 @@ namespace UpSchool.Domain.Tests.Services
                 Email = String.Empty
             };
 
-            await Assert.ThrowsAsync<ArgumentException>(() => userService.UpdateAsync(userNullEmail, cancellationSource.Token));
-            await Assert.ThrowsAsync<ArgumentException>(() => userService.UpdateAsync(userEmptyEmail, cancellationSource.Token));
+            var exceptionNull = await Assert.ThrowsAsync<ArgumentException>(() => userService.UpdateAsync(userNullEmail, cancellationSource.Token));
+            var exceptionEmpty = await Assert.ThrowsAsync<ArgumentException>(() => userService.UpdateAsync(userEmptyEmail, cancellationSource.Token));
+            
+            Assert.Equal("Email cannot be null or empty.", exceptionNull.Message);
+            Assert.Equal("Email cannot be null or empty.", exceptionEmpty.Message);
         }
         
         [Fact]
@@ -153,7 +170,9 @@ namespace UpSchool.Domain.Tests.Services
         
             IUserService userService = new UserManager(userRepositoryMock);
 
-            await Assert.ThrowsAsync<ArgumentNullException>(() => userService.UpdateAsync(null, cancellationSource.Token));
+            var result = Assert.ThrowsAsync<ArgumentNullException>(() => userService.UpdateAsync(null, cancellationSource.Token));
+            
+            Assert.Equal("User cannot be null.", result.Exception.Message);
         }
 
         [Fact]
