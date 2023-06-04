@@ -6,15 +6,15 @@ The primary objective of this project is to automate the process of crawling pro
 ## Technologies
 The project utilizes the following technologies:
 
-*Language: C#
-*Framework: .NET 7
-*Architecture: Clean Architecture
-*Web scraping: Selenium
-*Database: Entity Framework Core
-*CQRS: MediatR
-*SignalR: Microsoft.AspNetCore.SignalR
-*Caching: Microsoft.Extensions.Caching.Memory
-*Validation: FluentValidation
+* Language: C#
+* Framework: .NET 7
+* Architecture: Clean Architecture
+* Web scraping: Selenium
+* Database: Entity Framework Core
+* CQRS: MediatR
+* SignalR: Microsoft.AspNetCore.SignalR
+* Caching: Microsoft.Extensions.Caching.Memory
+* Validation: FluentValidation
 
 ## Project Structure
 The project follows the principles of the Clean Architecture, with a clear separation of concerns and a layered structure:
