@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "s9ijFZLYjtcFtfZN1wao6TBMJkQYWhI+4c2kFIKwNW4EnPJsuPRY1LtiCX09URZPTkBMi1YmuhcrO7QKERFwVQ==",
+  "success": true,
+  "projectFilePath": "/Users/serratug/RiderProjects/UpSchoolProjects/FSDFinalProject/src/Domain/Domain.csproj",
+  "expectedPackageFiles": [
+    "/Users/serratug/.nuget/packages/mediatr/12.0.1/mediatr.12.0.1.nupkg.sha512",
+    "/Users/serratug/.nuget/packages/mediatr.contracts/2.0.1/mediatr.contracts.2.0.1.nupkg.sha512",
+    "/Users/serratug/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/6.0.0/microsoft.extensions.dependencyinjection.abstractions.6.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}

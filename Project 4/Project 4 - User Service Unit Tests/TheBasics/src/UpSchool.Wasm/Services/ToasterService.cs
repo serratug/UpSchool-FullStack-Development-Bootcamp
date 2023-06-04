@@ -19,7 +19,8 @@ namespace UpSchool.Wasm.Services
             {
                 Text = message,
                 Position = ToastPosition.TopCenter,
-                Heading = "UpSchool"
+                Heading = "UpSchool",
+                LoaderBackground = "#ffffff"
             });
         }
 
@@ -29,7 +30,8 @@ namespace UpSchool.Wasm.Services
             {
                 Text = message,
                 Position = ToastPosition.TopCenter,
-                Heading = "Error!"
+                Heading = "Error!",
+                LoaderBackground = "#ffffff"
             });
         }
     }

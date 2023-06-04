@@ -1,0 +1,115 @@
+@using Application.Common.Models.Order
+@using Domain.Enums
+@using Application.Common.Extensions
+@using Application.Features.Orders.Commands.Remove
+@inject HttpClient HttpClient
+
+<div class="card col-12 dark-card">
+                <div class="card-header dark text-center">
+                    ORDERS
+                </div>
+            <div class="card-body dark" style="background-color: transparent">
+                @if (isLoading)
+                {
+                    <div class="spinner-container">
+                      <div class="sk-chase">
+                        <div class="sk-chase-dot"></div>
+                        <div class="sk-chase-dot"></div>
+                        <div class="sk-chase-dot"></div>
+                        <div class="sk-chase-dot"></div>
+                        <div class="sk-chase-dot"></div>
+                        <div class="sk-chase-dot"></div>
+                      </div>
+                    </div>
+                }
+                else
+                {
+                   <table class="table table-responsive table-striped text-center align-items-center justify-content-center border-secondary"
+                       style="background-color: transparent; color: #ffffff; width: 100%">
+                    <thead>
+                    <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">Requested</th>
+                        <th scope="col">Found</th>
+                        <th scope="col">Events</th>
+                        <th scope="col">Products</th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+                    <tbody class="font-weight-lighter">
+                    @foreach (OrderDto order in orders)
+                    {
+                        <tr>
+                            <td style="font-size: 1em;">@order.Id</td>
+                            <td>@order.CreatedOn.ToString("g")</td>
+                            <td>@(EnumExtensions.GetDisplayName(order.ProductCrawlType))</td>
+                            <td>@(order.ProductAmountChoice == ProductAmountChoice.All ? "All" : order.RequestedAmount)</td>
+                            <td>@order.TotalFoundAmount</td>
+                            <td>
+                                <span class="input-group-text oi oi-eye clickable" style="color: #767D92; border-color: #767D92;" @onclick="@(() => RedirectOrderEventsPage(order.Id))"></span>
+                            </td>
+                            <td>
+                                <span class="input-group-text oi oi-eye clickable" style="color: #506680; border-color: #506680;" @onclick="@(() => RedirectProductsPage(order.Id))"></span>
+                            </td>
+                            <td>
+                                <span class="input-group-text oi oi-trash clickable delete-span" @onclick="@(() => DeleteOrder(order.Id))"></span>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table> 
+                }
+                
+
+
+
+            </div>
+        
+            </div>
+
+@code {
+    
+    [Parameter]
+    public bool isLoading { get; set; }
+    
+    [Parameter]
+    public List<OrderDto> orders { get; set; }
+    
+    [Parameter]
+    public ProductsPopup productsPopupRef { get; set; }
+    
+    [Parameter]
+    public OrderEventsPopup orderEventsPopupRef { get; set; }
+    
+    
+    private async Task RedirectProductsPage(Guid orderId)
+    {
+        await productsPopupRef.Open(orderId);
+    }
+    
+    private async Task RedirectOrderEventsPage(Guid orderId)
+    {
+        await orderEventsPopupRef.Open(orderId);
+    }
+    
+    private async Task DeleteOrder(Guid orderId)
+    {
+        var response = await HttpClient.PostAsJsonAsync("Orders/Remove", new OrderRemoveCommand(orderId));
+        
+        if (!response.IsSuccessStatusCode)
+        {
+            Console.WriteLine(response.Content.ReadAsStringAsync());
+        
+            return;
+        }
+
+        var orderToRemove = orders.FirstOrDefault(x => x.Id == orderId);
+
+        if (orderToRemove != null) orders.Remove(orderToRemove);
+        
+        StateHasChanged();
+    }
+    
+}

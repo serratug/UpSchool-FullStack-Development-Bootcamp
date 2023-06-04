@@ -1,0 +1,152 @@
+@using Application.Features.OrderEvents.Queries.GetAll
+@using Application.Common.Models.Order
+@inject HttpClient HttpClient
+
+<div class="modal @modalClass" tabindex="-1" role="dialog" style="display:@modalDisplay; overflow-y: auto;">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content" style="overflow-y:auto;">
+            <div class="modal-header">
+                <h5 class="modal-title">Events of Order @orderId</h5>
+                <button type="button" class="btn-close btn-close-white" aria-label="Close" @onclick="Close"></button>
+            </div>
+            <div class="modal-body" style="overflow: auto;">
+            @if (orderEvents != null) 
+            {
+                if (orderEvents.Count == 0)
+                {
+                    <p>No events.</p>
+                }
+                else
+                {
+                    <table class="table table-responsive text-center align-items-center justify-content-center border-light"
+                           style="background-color: transparent; color: #fbfbfb; width: 100%">
+                        <thead class="border-light">
+                        <tr>
+                            <th scope="col">Status</th>
+                            <th scope="col">Time</th>
+                        </tr>
+                        </thead>
+                        <tbody class="font-weight-lighter">
+
+                        @foreach (OrderEventDto orderEvent in orderEvents)
+                        {
+                            <tr class="text-center align-middle">
+                                <td>@Application.Common.Extensions.EnumExtensions.GetDisplayName(orderEvent.Status)</td>
+                                <td>@orderEvent.CreatedOn.ToString("G")</td>
+                            </tr>
+                        }
+
+                        </tbody>
+                    </table>
+                }
+            }
+            </div>
+            <div class="modal-footer">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (showBackdrop)
+{
+    <div class="modal-backdrop fade show"></div>
+}
+
+@code {
+    
+    private string modalDisplay = "none;";
+    
+    private string modalClass = "";
+    
+    private bool showBackdrop = false;
+    
+    Guid orderId;
+
+    public async Task Open(Guid orderId)
+    {
+        modalDisplay = "block;";
+        modalClass = "show";
+        showBackdrop = true;
+        this.orderId = orderId;
+        
+        var response = await HttpClient.PostAsJsonAsync("OrderEvents/GetAll", new OrderEventGetAllQuery(orderId));
+        if (response.IsSuccessStatusCode)
+        {
+            orderEvents = await response.Content.ReadFromJsonAsync<List<OrderEventDto>>();
+
+        }
+        StateHasChanged();
+    }
+
+    public void Close()
+    {
+        modalDisplay = "none";
+        modalClass = "";
+        showBackdrop = false;
+    }
+    
+    [Parameter]
+    public bool IsVisible { get; set; }
+
+    [Parameter]
+    public List<OrderEventDto> orderEvents { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> IsVisibleChanged { get; set; }
+
+}
+
+<style>
+
+    .modal-header {
+        color: #fbfbfb;
+        letter-spacing: 2px;
+        font-size: 1.2em;
+        font-family: 'Inconsolata', monospace;
+    }  
+    .modal-content {
+        background-color: rgba(34, 40, 49, .6);
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    
+    .modal-body {
+        overflow-y: scroll;
+    }
+    
+     .modal-body table tbody {
+         border-color: #ababab;
+     }
+
+     .modal-body table tr .image-cell {
+         background: #ffffff;
+         max-width: 90px;
+         box-shadow: rgba(0, 0, 0, 0.06) 0px 2px 4px 0px inset;
+     }
+
+     ::-webkit-scrollbar {
+         width: 12px;
+     }
+
+     ::-webkit-scrollbar-track {
+         -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+         border-radius: 10px;
+     }
+
+     ::-webkit-scrollbar-thumb {
+         border-radius: 10px;
+         -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+     }
+     
+    .modal-open {
+        padding-right: 0 !important;
+    }
+    
+    html {
+      overflow-y: scroll !important;
+    }
+     
+</style>

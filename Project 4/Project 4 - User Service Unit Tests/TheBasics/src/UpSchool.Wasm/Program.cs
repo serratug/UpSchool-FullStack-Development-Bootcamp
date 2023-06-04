@@ -24,6 +24,8 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(apiUrl) 
 
 builder.Services.AddBlazoredToast();
 
+
+
 builder.Services.AddScoped<IToasterService, BlazoredToastService>();
 
 builder.Services.AddLocalization(options =>

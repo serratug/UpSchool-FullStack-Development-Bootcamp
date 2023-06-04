@@ -10,14 +10,19 @@
     <projectFile profileName="https">src/UpSchool.Wasm/UpSchool.Wasm.csproj</projectFile>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a8ad322a-ffc9-4519-9f91-cb08060ca5b5" name="Changes" comment="" />
+    <list default="true" id="a8ad322a-ffc9-4519-9f91-cb08060ca5b5" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../../../Project 3/Project 3 - UpStorage/UpStorage/.idea/.idea.UpStorage/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Project 3/Project 3 - UpStorage/UpStorage/.idea/.idea.UpStorage/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Project 3/Project 3 - UpStorage/UpStorage/src/WebApi/Controllers/CitiesController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Project 3/Project 3 - UpStorage/UpStorage/src/WebApi/Controllers/CitiesController.cs" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/a3ff10f1fe11470d95f2a6f3bd7795532c00/a0/5a790ca5/ToastOptions.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/10616addb6e783cc90acec53f9316ccec363cf7a57b27055a964beafd4b32d95/ArgumentNullException.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/7dbc85d1bc14653f6d87a953955b8ae0c4249a6e9f3f3e14b53f37dc02528/HttpClientJsonExtensions.Post.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/d7e0d612792e6c8a7e505ae0b5ec548273d455f1ee76d1d0b44835e3cf/ArgumentException.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
@@ -175,7 +180,23 @@
       <workItem from="1684358727672" duration="231000" />
       <workItem from="1684437878237" duration="4605000" />
       <workItem from="1684525479561" duration="1353000" />
-      <workItem from="1684584580347" duration="2181000" />
+      <workItem from="1684584580347" duration="3116000" />
+      <workItem from="1684621171125" duration="21969000" />
+      <workItem from="1684930683122" duration="6237000" />
+      <workItem from="1684957212273" duration="11891000" />
+      <workItem from="1685080381895" duration="10837000" />
+      <workItem from="1685180497686" duration="4606000" />
+      <workItem from="1685223718160" duration="22000" />
+      <workItem from="1685229375980" duration="37000" />
+      <workItem from="1685275625336" duration="46000" />
+      <workItem from="1685302943186" duration="1460000" />
+      <workItem from="1685346624518" duration="2000" />
+      <workItem from="1685451190957" duration="3540000" />
+      <workItem from="1685516801943" duration="598000" />
+      <workItem from="1685535125858" duration="2699000" />
+      <workItem from="1685785988544" duration="152000" />
+      <workItem from="1685870067776" duration="3107000" />
+      <workItem from="1685895922528" duration="7815000" />
     </task>
     <servers />
   </component>

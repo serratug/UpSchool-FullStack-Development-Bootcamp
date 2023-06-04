@@ -1,0 +1,12 @@
+/Users/serratug/RiderProjects/UpSchoolProjects/FSDFinalProject/src/Domain/bin/Debug/net7.0/Domain.deps.json
+/Users/serratug/RiderProjects/UpSchoolProjects/FSDFinalProject/src/Domain/bin/Debug/net7.0/Domain.dll
+/Users/serratug/RiderProjects/UpSchoolProjects/FSDFinalProject/src/Domain/bin/Debug/net7.0/Domain.pdb
+/Users/serratug/RiderProjects/UpSchoolProjects/FSDFinalProject/src/Domain/obj/Debug/net7.0/Domain.csproj.AssemblyReference.cache
+/Users/serratug/RiderProjects/UpSchoolProjects/FSDFinalProject/src/Domain/obj/Debug/net7.0/Domain.GeneratedMSBuildEditorConfig.editorconfig
+/Users/serratug/RiderProjects/UpSchoolProjects/FSDFinalProject/src/Domain/obj/Debug/net7.0/Domain.AssemblyInfoInputs.cache
+/Users/serratug/RiderProjects/UpSchoolProjects/FSDFinalProject/src/Domain/obj/Debug/net7.0/Domain.AssemblyInfo.cs
+/Users/serratug/RiderProjects/UpSchoolProjects/FSDFinalProject/src/Domain/obj/Debug/net7.0/Domain.csproj.CoreCompileInputs.cache
+/Users/serratug/RiderProjects/UpSchoolProjects/FSDFinalProject/src/Domain/obj/Debug/net7.0/Domain.dll
+/Users/serratug/RiderProjects/UpSchoolProjects/FSDFinalProject/src/Domain/obj/Debug/net7.0/refint/Domain.dll
+/Users/serratug/RiderProjects/UpSchoolProjects/FSDFinalProject/src/Domain/obj/Debug/net7.0/Domain.pdb
+/Users/serratug/RiderProjects/UpSchoolProjects/FSDFinalProject/src/Domain/obj/Debug/net7.0/ref/Domain.dll

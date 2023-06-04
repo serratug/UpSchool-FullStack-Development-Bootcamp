@@ -1,0 +1,15 @@
+/Users/serratug/RiderProjects/UpSchoolProjects/FSDFinalProject/src/Application/bin/Debug/net7.0/Application.deps.json
+/Users/serratug/RiderProjects/UpSchoolProjects/FSDFinalProject/src/Application/bin/Debug/net7.0/Application.dll
+/Users/serratug/RiderProjects/UpSchoolProjects/FSDFinalProject/src/Application/bin/Debug/net7.0/Application.pdb
+/Users/serratug/RiderProjects/UpSchoolProjects/FSDFinalProject/src/Application/bin/Debug/net7.0/Domain.dll
+/Users/serratug/RiderProjects/UpSchoolProjects/FSDFinalProject/src/Application/bin/Debug/net7.0/Domain.pdb
+/Users/serratug/RiderProjects/UpSchoolProjects/FSDFinalProject/src/Application/obj/Debug/net7.0/Application.csproj.AssemblyReference.cache
+/Users/serratug/RiderProjects/UpSchoolProjects/FSDFinalProject/src/Application/obj/Debug/net7.0/Application.GeneratedMSBuildEditorConfig.editorconfig
+/Users/serratug/RiderProjects/UpSchoolProjects/FSDFinalProject/src/Application/obj/Debug/net7.0/Application.AssemblyInfoInputs.cache
+/Users/serratug/RiderProjects/UpSchoolProjects/FSDFinalProject/src/Application/obj/Debug/net7.0/Application.AssemblyInfo.cs
+/Users/serratug/RiderProjects/UpSchoolProjects/FSDFinalProject/src/Application/obj/Debug/net7.0/Application.csproj.CoreCompileInputs.cache
+/Users/serratug/RiderProjects/UpSchoolProjects/FSDFinalProject/src/Application/obj/Debug/net7.0/Application.csproj.CopyComplete
+/Users/serratug/RiderProjects/UpSchoolProjects/FSDFinalProject/src/Application/obj/Debug/net7.0/Application.dll
+/Users/serratug/RiderProjects/UpSchoolProjects/FSDFinalProject/src/Application/obj/Debug/net7.0/refint/Application.dll
+/Users/serratug/RiderProjects/UpSchoolProjects/FSDFinalProject/src/Application/obj/Debug/net7.0/Application.pdb
+/Users/serratug/RiderProjects/UpSchoolProjects/FSDFinalProject/src/Application/obj/Debug/net7.0/ref/Application.dll

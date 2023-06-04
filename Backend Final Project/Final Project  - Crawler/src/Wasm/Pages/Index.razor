@@ -1,0 +1,160 @@
+﻿@page "/"
+@using Application.Common.Models.Log
+@using Domain.Utilities
+@using Microsoft.AspNetCore.SignalR.Client
+@using Application.Common.Models.Order
+@using Application.Common.Interfaces
+@* @using Application.Features.Orders.Queries.GetAll *@
+@using Domain.Enums
+@using Wasm.Components
+@inject HttpClient HttpClient
+@inject IUrlHelperService UrlHelperService
+@inject IJSRuntime JsRuntime
+@inject IToastService ToastService
+
+<div class="container-fluid">
+    <div class="row p-3 mb-0 gap-4 justify-content-between">
+        
+        <CreateOrderCard/>
+        
+        <ConsoleWindow 
+            logs="@logs"/>
+    </div>
+    
+    <div class="row p-3 mb-2">
+        <OrdersTable isLoading="@isLoading"
+                     orders="@orders"
+                     productsPopupRef="@productsPopupRef"
+                     orderEventsPopupRef="@orderEventsPopupRef"/>
+    </div>
+</div>
+
+<ProductsPopup @ref="productsPopupRef" />
+
+<OrderEventsPopup @ref="orderEventsPopupRef" />
+
+
+
+@code {
+
+    private ProductsPopup productsPopupRef;
+    
+    private OrderEventsPopup orderEventsPopupRef;
+
+    private List<LogDto> logs = new ();
+
+    private List<OrderDto> orders = new ();
+
+    private HubConnection? logHubConnection;
+    
+    private HubConnection? orderHubConnection;
+    
+    private HubConnection? notificationHubConnection;
+
+    private bool isLoading = true;
+    
+
+    protected override async Task OnInitializedAsync()
+    {
+        logHubConnection = new HubConnectionBuilder()
+            .WithUrl($"{UrlHelperService.SignalRUrl}/LogHub")
+            .WithAutomaticReconnect()
+            .Build();
+        
+        orderHubConnection = new HubConnectionBuilder()
+            .WithUrl($"{UrlHelperService.SignalRUrl}/OrderHub")
+            .WithAutomaticReconnect()
+            .Build();
+        
+        notificationHubConnection = new HubConnectionBuilder()
+            .WithUrl($"{UrlHelperService.SignalRUrl}/NotificationHub")
+            .WithAutomaticReconnect()
+            .Build();
+        
+        await logHubConnection.StartAsync();
+        await orderHubConnection.StartAsync();
+        await notificationHubConnection.StartAsync();
+
+        logHubConnection.On<LogDto>(SignalRMethodKeys.Log.NewLogAdded, (logDto) =>
+        {
+            logs.Add(logDto);
+
+            InvokeAsync(StateHasChanged);
+        });
+        
+        orderHubConnection.On<Guid>(SignalRMethodKeys.Order.Removed, (orderId) =>
+        {
+            var orderToRemove = orders.FirstOrDefault(x => x.Id == orderId);
+            if (orderToRemove == null)
+                Console.WriteLine("Order not found.");
+            else
+                orders.Remove(orderToRemove);
+
+            InvokeAsync(StateHasChanged);
+        });
+        
+        orderHubConnection.On<OrderDto>(SignalRMethodKeys.Order.Updated, (orderDto) =>
+        {
+            var orderToUpdate = orders.FirstOrDefault(x => x.Id == orderDto.Id);
+            if (orderToUpdate == null)
+                Console.WriteLine("Order not found.");
+            else
+            {
+                orderToUpdate.TotalFoundAmount = orderDto.TotalFoundAmount;
+            }
+            
+            InvokeAsync(StateHasChanged);
+        });
+        
+        orderHubConnection.On<OrderDto>(SignalRMethodKeys.Order.Added, (order) =>
+        {
+            orders.Add(order);
+
+            InvokeAsync(StateHasChanged);
+        });
+        
+        notificationHubConnection.On<OrderStatus>(SignalRMethodKeys.Notification.NewNotificationAdded, (status) =>
+        {
+            if (status == OrderStatus.CrawlingCompleted)
+                ToastService.ShowSuccess("Crawling successfully completed.");
+            
+            if (status == OrderStatus.CrawlingFailed)
+                ToastService.ShowError("Crawling failed.");
+        });
+
+        isLoading = true;
+
+        var response = await HttpClient.PostAsJsonAsync("Orders/GetAll", new OrderDto());
+        
+        if (response.IsSuccessStatusCode)
+        {
+            Thread.Sleep(1000); // Wait for a moment to see my cool loading spinner.
+            orders = await response.Content.ReadFromJsonAsync<List<OrderDto>>();
+
+            isLoading = false;
+
+        }
+
+        await base.OnInitializedAsync();
+    }
+
+    public ValueTask DisposeAsync()
+    {
+        if (logHubConnection is not null)
+        {
+            return logHubConnection.DisposeAsync();
+        }
+        if (orderHubConnection is not null)
+        {
+            return orderHubConnection.DisposeAsync();
+        }
+        
+        if (notificationHubConnection is not null)
+        {
+            return notificationHubConnection.DisposeAsync();
+        }
+
+        return ValueTask.CompletedTask;
+    }
+
+}

@@ -1,0 +1,61 @@
+is_global = true
+build_property.TargetFramework = net7.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = 
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = false
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = browser
+build_property.RootNamespace = Wasm
+build_property.RootNamespace = Wasm
+build_property.ProjectDir = /Users/serratug/RiderProjects/UpSchoolProjects/FSDFinalProject/src/Wasm/
+build_property.RazorLangVersion = 7.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = /Users/serratug/RiderProjects/UpSchoolProjects/FSDFinalProject/src/Wasm
+build_property._RazorSourceGeneratorDebug = 
+
+[/Users/serratug/RiderProjects/UpSchoolProjects/FSDFinalProject/src/Wasm/App.razor]
+build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/serratug/RiderProjects/UpSchoolProjects/FSDFinalProject/src/Wasm/Components/ConsoleWindow.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9Db25zb2xlV2luZG93LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/serratug/RiderProjects/UpSchoolProjects/FSDFinalProject/src/Wasm/Components/CreateOrderCard.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9DcmVhdGVPcmRlckNhcmQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/serratug/RiderProjects/UpSchoolProjects/FSDFinalProject/src/Wasm/Components/OrderEventsPopup.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9PcmRlckV2ZW50c1BvcHVwLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/serratug/RiderProjects/UpSchoolProjects/FSDFinalProject/src/Wasm/Components/OrdersTable.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9PcmRlcnNUYWJsZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/serratug/RiderProjects/UpSchoolProjects/FSDFinalProject/src/Wasm/Components/ProductsPopup.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9Qcm9kdWN0c1BvcHVwLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/serratug/RiderProjects/UpSchoolProjects/FSDFinalProject/src/Wasm/Pages/Index.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvSW5kZXgucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/serratug/RiderProjects/UpSchoolProjects/FSDFinalProject/src/Wasm/Shared/SurveyPrompt.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL1N1cnZleVByb21wdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/serratug/RiderProjects/UpSchoolProjects/FSDFinalProject/src/Wasm/_Imports.razor]
+build_metadata.AdditionalFiles.TargetPath = X0ltcG9ydHMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/serratug/RiderProjects/UpSchoolProjects/FSDFinalProject/src/Wasm/Shared/MainLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL01haW5MYXlvdXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-192bc3p4pt
+
+[/Users/serratug/RiderProjects/UpSchoolProjects/FSDFinalProject/src/Wasm/Shared/NavMenu.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL05hdk1lbnUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-3fkw4c9w1x

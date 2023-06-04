@@ -1,0 +1,100 @@
+@using Application.Common.Models.Order
+@using Domain.Enums
+@using Application.Common.Extensions
+@inject HttpClient HttpClient
+
+<div class="card col-3 dark dark-card create-card">
+            <div class="card-header dark text-center">
+                CREATE ORDER
+            </div>
+            <div class="card-body dark">
+                <div class="container dark">
+                    <EditForm Model="@orderDto" OnValidSubmit=@SendForm>
+        
+                        <div class="form-group dark">
+                            
+                            <label for="productAmountChoice">Number of Products</label>
+                            <br/>
+                            <InputRadioGroup class="form-control dark" id="productAmountChoice" @bind-Value="@orderDto.ProductAmountChoice">
+                                <div class="col-12">
+                                    <div class="row mt-2">
+                                        <div class="col-8">
+                                            <InputRadio Value="@ProductAmountChoice.All" id="@ProductAmountChoice.All.ToString()"
+                                                        checked="@IsAllAmountSelected" @onchange="@((args) => UpdateProductAmountChoice(ProductAmountChoice.All))"
+                                                        class="btn-check dark bg-dark" autocomplete="off"/>
+                                            <label class="btn btn-outline-success" for="@ProductAmountChoice.All.ToString()">@EnumExtensions.GetDisplayName(ProductAmountChoice.All)</label>                                        
+                                        </div>
+                                        <div class="col-4"></div>
+    
+                                    </div>
+                                    
+                                    <div class="row mt-2">
+                                        <div class="col-8">
+                                            <InputRadio Value="@ProductAmountChoice.SpecificAmount" id="@ProductAmountChoice.SpecificAmount.ToString()"
+                                                        checked="@IsSpecificAmountSelected" @onchange="@((args) => UpdateProductAmountChoice(ProductAmountChoice.SpecificAmount))"
+                                                        class="btn-check dark bg-dark" autocomplete="off"/>
+                                            <label class="btn btn-outline-warning" for="@ProductAmountChoice.SpecificAmount.ToString()">@EnumExtensions.GetDisplayName(ProductAmountChoice.SpecificAmount)</label>
+                                        </div>
+                                        <div class="col-4 number-input-div">
+                                            <InputNumber class="form-control border-light" style="background-color: transparent; color: #ffffff" id="requestedAmount" @bind-Value="orderDto.RequestedAmount"
+                                                         disabled="@(!IsSpecificAmountSelected)" required="@IsSpecificAmountSelected"/>                                        
+                                        </div>
+    
+                                    </div>
+    
+                                </div>
+        
+                            </InputRadioGroup>
+        
+                        </div>
+                        <br/>
+                        
+                        
+                        <div class="form-group">
+                            <label for="productCrawlType">Product Type</label>
+                            <select class="form-control mt-2 border-light" style="background-color: transparent; color: #ffffff" id="productCrawlType" @bind="@orderDto.ProductCrawlType">
+                                @foreach (ProductCrawlType value in Enum.GetValues(typeof(ProductCrawlType)))
+                                {
+                                    <option value="@value">@EnumExtensions.GetDisplayName(value)</option>
+                                }
+                            </select>
+                        </div>
+                        
+                        <br/>
+                                
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-light form-control">Start</button>
+                        </div>
+                    </EditForm>
+                </div>
+                
+            </div>
+        </div>
+
+@code {
+    
+    private OrderDto orderDto = new();
+    
+    private bool IsAllAmountSelected => orderDto.ProductAmountChoice == ProductAmountChoice.All;
+    
+    private bool IsSpecificAmountSelected => orderDto.ProductAmountChoice == ProductAmountChoice.SpecificAmount;
+    
+    private void UpdateProductAmountChoice(ProductAmountChoice choice)
+    {
+        orderDto.ProductAmountChoice = choice;
+    }
+    
+    private async Task SendForm()
+    {
+        var response = await HttpClient.PostAsJsonAsync("Orders/Add", orderDto);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            Console.WriteLine(response.Content.ReadAsStringAsync());
+        
+            return;
+        }
+
+        return;
+    }
+}
