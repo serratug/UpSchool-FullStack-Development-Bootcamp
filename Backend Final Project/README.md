@@ -2,6 +2,7 @@
 
 The primary objective of this project is to automate the process of crawling product data while tracking crawler events in real-time.
 
+![](https://github.com/serratug/UpSchool-FullStack-Development-Bootcamp/blob/main/Backend%20Final%20Project/crawlerdemo.gif)
 
 ## Technologies
 The project utilizes the following technologies:
