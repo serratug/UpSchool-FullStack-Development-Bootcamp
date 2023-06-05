@@ -29,9 +29,9 @@ The project follows the principles of the Clean Architecture, with a clear separ
 ## Getting Started
 To run the crawler project locally, follow these steps:
 1. Clone the repository
-2. Navigate the WebApi project directory and run
-3. Navigate the Wasm project directory and run
-4. Navigate to Crawler project directory and run
+2. Navigate to the WebApi project directory and run
+3. Navigate to the Wasm project directory and run
+4. Navigate to the Crawler project directory and run
 5. Access the Blazor web application in your browser (e.g., http://localhost:5122) to create orders and view log messages.
 
 ## Configuration 
