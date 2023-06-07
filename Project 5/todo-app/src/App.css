@@ -45,7 +45,7 @@ label {
 input[type="text"]{
 
   margin: 0 !important;
-  color: #CCA9BC;
+  color: #B8CDD6 !important;
   border: 1px solid #CCA9BC;
   border-radius: 3px;
   outline: none;
@@ -62,4 +62,8 @@ input[type="text"]{
 
 .completed-task {
   text-decoration: line-through;
+}
+
+.disabled-button {
+  color: #BBbbbb !important;
 }

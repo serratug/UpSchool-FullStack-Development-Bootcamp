@@ -25,16 +25,6 @@ function App() {
         }
     };
 
-    const handleToggleComplete = (id: number) => {
-        const updatedTodos = todos.map(todo => {
-            if (todo.id === id) {
-                return { ...todo, isCompleted: !todo.isCompleted };
-            }
-            return todo;
-        });
-        setTodos(updatedTodos);
-    };
-
     const handleDeleteTodo = (id: number) => {
         const updatedTodos = todos.filter(todo => todo.id !== id);
         setTodos(updatedTodos);
@@ -68,7 +58,14 @@ function App() {
                         />
                     </div>
 
-                    <Button icon type="submit" primary onClick={handleAddTodo} className={"button-add"}>
+                    <Button
+                        icon
+                        type="submit"
+                        primary
+                        onClick={handleAddTodo}
+                        disabled={!newTask.trim()}
+                        className={newTask.trim() ? "button-add" : "button-add disabled-button"}
+                    >
                         <Icon name='plus' />
                     </Button>
                 </div>
@@ -90,7 +87,6 @@ function App() {
                                         {todo.task}
                                     </div>
                                 }
-                                onChange={() => handleToggleComplete(todo.id)}
                             />
                             <Button icon onClick={() => handleDeleteTodo(todo.id)} className={"button-delete"}>
                                 <Icon name='trash' />
