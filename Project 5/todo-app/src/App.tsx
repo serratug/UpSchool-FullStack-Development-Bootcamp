@@ -1,12 +1,13 @@
 import 'semantic-ui-css/semantic.min.css'
 import './App.css'
 import React, { useState } from 'react';
-import {Button, Checkbox, Divider, Form, Icon, List, Segment} from 'semantic-ui-react';
+import {Button, Checkbox, Divider, Form, Icon, List, Segment, Dropdown} from 'semantic-ui-react';
 import { TodoItem } from './types/TodoItem';
 
 function App() {
     const [todos, setTodos] = useState<TodoItem[]>([]);
     const [newTask, setNewTask] = useState('');
+    const [sortBy, setSortBy] = useState('latest');
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setNewTask(event.target.value);
@@ -40,6 +41,18 @@ function App() {
         setTodos(updatedTodos);
     };
 
+    const handleSortChange = (_event: React.SyntheticEvent<HTMLElement>, data: any) => {
+        setSortBy(data.value);
+    };
+
+    const sortedTodos = todos.slice().sort((a, b) => {
+        if (sortBy === 'latest') {
+            return b.createdDate.getTime() - a.createdDate.getTime();
+        } else {
+            return a.createdDate.getTime() - b.createdDate.getTime();
+        }
+    });
+
     return (
         <Segment raised className={"main-segment"}>
 
@@ -69,12 +82,23 @@ function App() {
                         <Icon name='plus' />
                     </Button>
                 </div>
+                <div className={"d-flex"}>
+                    <Dropdown
+                        selection
+                        options={[
+                            { key: 'latest', value: 'latest', text: 'Latest' },
+                            { key: 'oldest', value: 'oldest', text: 'Oldest' },
+                        ]}
+                        value={sortBy}
+                        onChange={handleSortChange}
+                    />
+                </div>
             </Form>
 
             <Divider horizontal />
 
             <List divided relaxed>
-                {todos.map(todo => (
+                {sortedTodos.map(todo => (
                     <List.Item key={todo.id}>
                         <div className={"d-flex"}>
                             <Checkbox
