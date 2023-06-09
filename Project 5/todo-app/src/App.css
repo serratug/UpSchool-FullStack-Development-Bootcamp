@@ -6,7 +6,7 @@
   transition: 0.3s;
   color: #B8CDD6 !important;
   border-radius: 4px;
-  min-width: 400px;
+  min-width: 500px;
 }
 
 .main-header {
@@ -20,9 +20,10 @@
   min-width: 300px;
   max-width: 600px;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
-  margin-top: 10px;
+  margin: 0;
+  padding: 0;
 
 }
 
@@ -59,6 +60,7 @@ input[type="text"]{
   background-color: transparent !important;
   margin: 0px !important;
   margin-left: 3px !important;
+  padding: 0;
 }
 
 .completed-task {
@@ -67,4 +69,33 @@ input[type="text"]{
 
 .disabled-button {
   color: #BBbbbb !important;
+}
+
+.category-dropdown {
+  width: max-content !important;
+  margin-right: 10px;
+}
+
+h4 {
+  padding-left: 5px;
+  margin-bottom: 0;
+  margin-top: 10px !important;
+}
+
+.list-item {
+  padding: 0;
+}
+
+.todo-container {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  padding-top: 10px;
+}
+
+.todoText {
+  margin: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 5px;
 }
