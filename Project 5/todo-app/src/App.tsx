@@ -10,6 +10,7 @@ function App() {
     const [newTask, setNewTask] = useState('');
     const [newCategoryId, setNewCategoryId] = useState<number | null>(null);
     const [sortBy, setSortBy] = useState('latest');
+    const [selectedCategory, setSelectedCategory] = useState<number | null>(0);
     const [colors] = useState(['#C5D9AB', '#E6AFC3', '#FFCC9C', '#B199BF', '#71C1D1', '#F7D05E', '#8DD9C7'])
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,13 +58,20 @@ function App() {
         setNewCategoryId(data.value);
     };
 
-    const sortedTodos = todos.slice().sort((a, b) => {
-        if (sortBy === 'latest') {
-            return b.createdDate.getTime() - a.createdDate.getTime();
-        } else {
-            return a.createdDate.getTime() - b.createdDate.getTime();
-        }
-    });
+    const handleCategoryFilterChange = (_event: React.SyntheticEvent<HTMLElement>, data: DropdownProps) => {
+        setSelectedCategory(data.value as number | null);
+    };
+
+    const sortedTodos = todos
+        .slice()
+        .sort((a, b) => {
+            if (sortBy === 'latest') {
+                return b.createdDate.getTime() - a.createdDate.getTime();
+            } else {
+                return a.createdDate.getTime() - b.createdDate.getTime();
+            }
+        })
+        .filter((todo) => selectedCategory === 0 || todo.category?.id === selectedCategory);
 
     return (
         <Segment raised className={"main-segment"}>
@@ -114,10 +122,12 @@ function App() {
                     </Button>
                 </div>
 
-                <div className={"d-flex"} style={{ marginTop: 10 }}>
+                <Divider horizontal />
 
-                    {/* We only need the sorting if there is more than one item in the list */}
-                    { todos.length > 1 && (
+                {/* We only need the sorting and filtering if there is more than one item in the list */}
+                { todos.length > 1 && (
+                    <div style={{ margin: 0 }}>
+
                         <Dropdown
                             selection
                             options={[
@@ -127,12 +137,29 @@ function App() {
                             value={sortBy}
                             onChange={handleSortChange}
                         />
-                    )}
 
-                </div>
+                        <Dropdown
+                            selection
+                            options={[
+                                { key: 'all', value: 0, text: 'All' },
+                                ...categories.map((category) => ({
+                                    key: category.id,
+                                    text: category.name,
+                                    value: category.id,
+                                    style: { color: category.color },
+                                })),
+                            ]}
+                            placeholder="Filter by Category"
+                            onChange={handleCategoryFilterChange}
+                            value={selectedCategory as number}
+                            className={"filter-dropdown"}
+                        />
+
+                    </div>
+                )}
+
+
             </Form>
-
-            <Divider horizontal />
 
             <List divided relaxed>
                 {sortedTodos.map(todo => (
