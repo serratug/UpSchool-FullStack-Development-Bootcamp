@@ -1,6 +1,6 @@
 import 'semantic-ui-css/semantic.min.css'
 import './App.css'
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {Button, Checkbox, Divider, Form, Icon, List, Segment, Dropdown, DropdownProps} from 'semantic-ui-react';
 import {TodoItem, TodoItemCategory} from './types/TodoItem';
 
@@ -13,6 +13,23 @@ function App() {
     const [selectedCategory, setSelectedCategory] = useState<number | null>(0);
     const [colors] = useState(['#C5D9AB', '#E6AFC3', '#FFCC9C', '#B199BF', '#71C1D1', '#F7D05E', '#8DD9C7'])
 
+
+    const loadFromLocalStorage = () => {
+        const storedTodos = localStorage.getItem('todos');
+        if (storedTodos) {
+            setTodos(JSON.parse(storedTodos));
+        }
+
+        const storedCategories = localStorage.getItem('categories');
+        if (storedCategories) {
+            setCategories(JSON.parse(storedCategories));
+        }
+    };
+
+    useEffect(() => {
+        loadFromLocalStorage();
+    }, []);
+
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setNewTask(event.target.value);
     };
@@ -22,13 +39,16 @@ function App() {
             const newTodo = new TodoItem(Date.now(), newTask);
             newTodo.category = categories.find(category => category.id === newCategoryId) || null;
             setTodos([...todos, newTodo]);
+
             setNewTask('');
+            localStorage.setItem('todos', JSON.stringify([...todos, newTodo]));
         }
     };
 
     const handleDeleteTodo = (id: number) => {
         const updatedTodos = todos.filter(todo => todo.id !== id);
         setTodos(updatedTodos);
+        localStorage.setItem('todos', JSON.stringify(updatedTodos));
     };
 
     const handleDoubleClick = (id: number) => {
@@ -48,9 +68,11 @@ function App() {
     const handleCategoryAddition = (_event: any, data: DropdownProps) => {
         const value = data.value as string;
         if (value.trim() !== '') {
-            const newCategory = new TodoItemCategory(Date.now(), value, colors[categories.length%colors.length]);
-            setCategories([...categories, newCategory]);
-            setNewCategoryId(newCategory.id); // Assign the newly added category to newTodo
+            const newCategory = new TodoItemCategory(Date.now(), value, colors[categories.length % colors.length]);
+            const updatedCategories = [...categories, newCategory];
+            setCategories(updatedCategories);
+            localStorage.setItem('categories', JSON.stringify(updatedCategories));
+            setNewCategoryId(newCategory.id);
         }
     };
 
@@ -65,10 +87,13 @@ function App() {
     const sortedTodos = todos
         .slice()
         .sort((a, b) => {
+            const aDate = new Date(a.createdDate);
+            const bDate = new Date(b.createdDate);
+
             if (sortBy === 'latest') {
-                return b.createdDate.getTime() - a.createdDate.getTime();
+                return bDate.getTime() - aDate.getTime();
             } else {
-                return a.createdDate.getTime() - b.createdDate.getTime();
+                return aDate.getTime() - bDate.getTime();
             }
         })
         .filter((todo) => selectedCategory === 0 || todo.category?.id === selectedCategory);
