@@ -1,0 +1,158 @@
+body {
+  background: linear-gradient(
+          90deg,
+          rgba(105, 20, 204, 1) 0%,
+          rgba(44, 114, 251, 1) 100%
+  );
+}
+{
+  font-family: 'Open Sans';
+}
+.join-chat-screen {
+  background: linear-gradient(
+          90deg,
+          rgba(105, 20, 204, 1) 0%,
+          rgba(44, 114, 251, 1) 100%
+  );
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.join-chat-content {
+  text-align: center;
+}
+
+.join-chat-form{
+  margin-bottom: 32px;
+}
+
+.join-chat-input {
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.join-chat-button {
+  padding: 16px;
+  border: none;
+  border-radius: 0 20px 20px 0;
+  cursor: pointer;
+  outline: none;
+  background: linear-gradient(
+          90deg,
+          rgba(105, 20, 204, 1) 0%,
+          rgba(44, 114, 251, 1) 100%
+  );
+  color: #fff;
+  text-transform: capitalize;
+}
+
+h2 {
+  margin: 32px 0;
+  font-size: 24px;
+}
+
+.container {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  height: 100vh;
+}
+
+.header {
+  background-color: #007bff;
+  color: white;
+  padding: 20px;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.content {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  background-color: #f2f2f2;
+  padding: 20px;
+}
+
+.connected-users {
+  background-color: white;
+  padding: 20px;
+}
+
+.connected-users h2 {
+  margin-bottom: 10px;
+}
+
+.connected-users ul {
+  list-style: none;
+  padding: 0;
+}
+
+.connected-users li {
+  margin-bottom: 5px;
+}
+
+.chat-history {
+  background-color: white;
+  padding: 20px;
+}
+
+.chat-history h2 {
+  margin-bottom: 10px;
+}
+
+.chat-history .message {
+  margin-bottom: 10px;
+}
+
+.chat-history .message span {
+  display: block;
+}
+
+.input-container {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  background-color: #f2f2f2;
+}
+
+.input-container input {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  margin-right: 10px;
+}
+
+.input-container button {
+  padding: 10px 20px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.input-container button:hover {
+  background-color: #0056b3;
+}
+.leave-button {
+  padding: 10px 20px;
+  background-color: red;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.leave-button:hover {
+  background-color: darkred;
+}
