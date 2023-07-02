@@ -1,0 +1,125 @@
+﻿@inherits LayoutComponentBase
+@using Application.Common.Models.Settings
+@inject HttpClient HttpClient
+
+
+<div class="page">
+    <main>
+        <div class="top-row px-4 text-light border-bottom-0 justify-content-between" style="background-color: #222831; box-shadow: 0px 0px 10px rgba(0,0,0,.4); display: flex">
+            <img src="img/skg-logo.png" style="height: 40px" class="align-self-center" />
+            <button class="@buttonClass" @onclick="ToggleMenu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </button>
+        </div>
+        
+        <BlazoredToasts />
+
+        <article class="content px-4" @onclick="CloseMenu">
+            @Body
+            
+        </article>
+        
+        @if (showMenu)
+        {
+            <div class="menu-content @((showMenu) ? "menu-content-open" : "")">
+                <EditForm Model="@settingsDto" OnValidSubmit=@SendForm>
+                    
+                    <div class="form-check form-switch">
+                        <InputCheckbox class="form-check-input" role="switch" id="flexSwitchCheckDefault" @bind-Value="@settingsDto.PushNotification"/>
+                        @* <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault"> *@
+                        <label class="form-check-label ms-2" for="flexSwitchCheckDefault">Push Notification</label>
+                    </div>
+                    <div class="form-check form-switch">
+                        <InputCheckbox class="form-check-input" role="switch" id="flexSwitchCheckDefault" @bind-Value="@settingsDto.EmailNotification" />
+                        @* <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" checked> *@
+                        <label class="form-check-label ms-2" for="flexSwitchCheckChecked">Email Notification</label>
+                    </div>
+                    <div class="ms-2 mt-2">
+                        <label>Email Address:</label>
+                        <InputText @bind-Value="@settingsDto.EmailAddress"/>
+                    </div>
+                    
+                    <div class="ms-2 mt-2">
+                        <button type="submit" class="btn mt-2" style="background-color: #FFD369; color: #222831;">Save</button>
+                    </div>
+                </EditForm>
+        
+            </div>
+                    
+        }
+
+    </main>
+</div>
+
+
+@code {
+    
+    private bool showMenu = false;
+
+    private string buttonClass = "burger-btn";
+    
+    private NotificationSettingsDto settingsDto = new();
+    
+    [Inject]
+    protected IJSRuntime JSRuntime { get; set; }
+    
+    private void ToggleMenu()
+    {
+        showMenu = !showMenu;
+        if (showMenu)
+        {
+            buttonClass = "btn-close btn-close-white";
+        }
+        else
+        {
+            buttonClass = "burger-btn";
+        }
+        
+        ToggleMenuInJavaScript(showMenu);
+        GetSettings();
+    }
+    
+    private async Task ToggleMenuInJavaScript(bool showMenu)
+    {
+        await JSRuntime.InvokeVoidAsync("toggleMenu", showMenu);
+    }
+
+    private void CloseMenu()
+    {
+        showMenu = false;
+        buttonClass = "burger-btn";
+        ToggleMenuInJavaScript(showMenu);
+    }
+    
+    private async Task GetSettings()
+    {
+        var response = await HttpClient.GetAsync("NotificationSettings/GetFirst");
+        
+        if (response.IsSuccessStatusCode)
+        {
+            settingsDto = await response.Content.ReadFromJsonAsync<NotificationSettingsDto>();
+        }
+        else
+        {
+            Console.WriteLine("settings not get");
+        }
+        
+        StateHasChanged();
+    }
+    
+    private async Task SendForm()
+    {
+        var response = await HttpClient.PutAsJsonAsync("NotificationSettings/Update", settingsDto);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            Console.WriteLine(response.Content.ReadAsStringAsync());
+        }
+        
+        StateHasChanged();
+
+        return;
+    }
+}
