@@ -11,72 +11,73 @@ using Microsoft.AspNetCore.SignalR.Client;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 
-namespace Crawler;
+namespace SeleniumWorker;
 
 public class Crawler
 {
-    private readonly IWebDriver driver;
+    private readonly IWebDriver _driver;
 
     private readonly List<ProductDto> Products;
 
-    private readonly HubConnection logHubConnection;
+    private readonly HubConnection _logHubConnection;
 
-    private readonly HubConnection orderHubConnection;
-    
-    private readonly ManualResetEventSlim completionSignal;
+    private readonly HubConnection _orderHubConnection;
 
-    private readonly HttpClient client;
+    private readonly HttpClient _httpClient;
+
+    private const string BASE_URL = "http://localhost:5108/";
     
 
     public Crawler()
     {
-        driver = new ChromeDriver();
+        _driver = new ChromeDriver();
         
         Products = new List<ProductDto>();
+
+        _logHubConnection = new HubConnectionBuilder()
+            .WithUrl($"{BASE_URL}Hubs/LogHub")
+            .WithAutomaticReconnect()
+            .Build();
+
+        _orderHubConnection = new HubConnectionBuilder()
+            .WithUrl($"{BASE_URL}Hubs/OrderHub")
+            .WithAutomaticReconnect()
+            .Build();
         
-        logHubConnection = new HubConnectionBuilder()
-            .WithUrl("http://localhost:5108/Hubs/LogHub")
-            .WithAutomaticReconnect()
-            .Build();
 
-        orderHubConnection = new HubConnectionBuilder()
-            .WithUrl("http://localhost:5108/Hubs/OrderHub")
-            .WithAutomaticReconnect()
-            .Build();
-
-        completionSignal = new ManualResetEventSlim(false);
-
-        client = new HttpClient();
-        client.BaseAddress = new Uri("http://localhost:5108/api/");
-        client.DefaultRequestHeaders.Clear();
-        client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        _httpClient = new HttpClient();
+        _httpClient.BaseAddress = new Uri($"{BASE_URL}api/");
+        _httpClient.DefaultRequestHeaders.Clear();
+        _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
     }
     
-    public async Task StartAsync()
+    public async Task StartAsync(CancellationToken cancellationToken)
     {
+        if (cancellationToken.IsCancellationRequested) await DisposeAsync();
+
         // Waiting for the signal that indicates a POST request has been sent to Add an Order.
-        orderHubConnection.On<OrderDto>(SignalRMethodKeys.Order.Added, async (orderDto) =>
+        _orderHubConnection.On<OrderDto>(SignalRMethodKeys.Order.Added, async (orderDto) =>
         {
+            // Clear the list before starting
+            Products.Clear();
+            
             await CrawlProductsAsync(orderDto);
             
-            await UpdateOrderAsync(orderDto.Id);
-
-            completionSignal.Set();
+            await UpdateOrderAsync(orderDto.Id); // Updates the TotalFoundAmount after crawling process
+            
         });
 
         try
         {
-            await logHubConnection.StartAsync();
+            await _logHubConnection.StartAsync();
             
-            await orderHubConnection.StartAsync();
+            await _orderHubConnection.StartAsync();
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error starting SignalR connection: {ex.Message}");
         }
-        
-        // Wait 5 minutes for the signal
-        completionSignal.Wait(300000);
+
     }
     
     public async Task CrawlProductsAsync(OrderDto orderDto)
@@ -85,18 +86,18 @@ public class Crawler
         {
             await AddOrderEvent(OrderStatus.BotStarted, orderDto.Id);
             
-            driver.Navigate().GoToUrl("https://finalproject.dotnet.gg/");
+            _driver.Navigate().GoToUrl("https://4teker.net/");
 
             Thread.Sleep(1000); // Wait for fun
             
-            await logHubConnection.InvokeAsync(SignalRMethodKeys.Log.SendLogNotificationAsync,
-                CreateLog("Navigated to finalproject.dotnet.gg"));
+            await _logHubConnection.InvokeAsync(SignalRMethodKeys.Log.SendLogNotificationAsync,
+                CreateLog("Navigated to 4teker.net"));
 
-            var totalPages = driver.FindElements(By.ClassName("page-number")).Last().Text;
+            var totalPages = _driver.FindElements(By.ClassName("page-number")).Last().Text;
 
             Thread.Sleep(1000); // Wait for fun
             
-            await logHubConnection.InvokeAsync(SignalRMethodKeys.Log.SendLogNotificationAsync,
+            await _logHubConnection.InvokeAsync(SignalRMethodKeys.Log.SendLogNotificationAsync,
                 CreateLog($"{totalPages} pages of products are found."));
 
             var pageCount = 1;
@@ -111,10 +112,10 @@ public class Crawler
             {
                 try
                 {
-                    var elements = driver.FindElements(By.ClassName("product-name"));
+                    var elements = _driver.FindElements(By.ClassName("product-name"));
                     var orderCompleted = await AddProductsInAPageAsync(elements, orderDto);
 
-                    await logHubConnection.InvokeAsync(SignalRMethodKeys.Log.SendLogNotificationAsync,
+                    await _logHubConnection.InvokeAsync(SignalRMethodKeys.Log.SendLogNotificationAsync,
                         CreateLog($"{pageCount}. page is crawled. Total {Products.Count} products added."));
 
                     if (orderCompleted || 
@@ -127,11 +128,11 @@ public class Crawler
                     
                     // This variable is the reason why try-catch block is used.
                     // No element will be found if it is last page and throws exception.
-                    var nextPage = driver.FindElement(By.ClassName("next-page"));
+                    var nextPage = _driver.FindElement(By.ClassName("next-page"));
 
                     pageCount++;
                     string url = nextPage.GetAttribute("href");
-                    driver.Navigate().GoToUrl(url);
+                    _driver.Navigate().GoToUrl(url);
                 }
                 catch (Exception exception)
                 {
@@ -145,12 +146,11 @@ public class Crawler
         {
             // Unexpected error
             Console.WriteLine(e.Message);
-            await logHubConnection.InvokeAsync(SignalRMethodKeys.Log.SendLogNotificationAsync,
+            await _logHubConnection.InvokeAsync(SignalRMethodKeys.Log.SendLogNotificationAsync,
                 CreateLog($"The order with ID '{orderDto.Id}' has failed due to an unexpected error."));
 
             await AddOrderEvent(OrderStatus.CrawlingFailed, orderDto.Id);
-            
-            driver.Quit();
+
         }
     }
     
@@ -165,7 +165,7 @@ public class Crawler
             
             ProductDto productDto = new ProductDto();
             
-            var div = driver.FindElement(By.XPath("/html/body/section/div/div/div[" + i + "]/div"));
+            var div = _driver.FindElement(By.XPath("/html/body/section/div/div/div[" + i + "]/div"));
             
             try
             {
@@ -190,7 +190,7 @@ public class Crawler
             
 
             // Send a POST request to Add a Product
-            var response = await client.PostAsJsonAsync("Products/Add", productDto);
+            var response = await _httpClient.PostAsJsonAsync("Products/Add", productDto);
             
             await HandleResponseFailure(response);
 
@@ -202,8 +202,7 @@ public class Crawler
     
     private async Task CrawlingCompletedAsync(OrderDto orderDto)
     {
-        driver.Quit();
-
+        
         Thread.Sleep(1000); // Wait for fun
         
         await AddOrderEvent(OrderStatus.CrawlingCompleted, orderDto.Id);
@@ -217,10 +216,9 @@ public class Crawler
             ? $"/{orderDto.RequestedAmount}"
             : "";
         
-        await logHubConnection.InvokeAsync(SignalRMethodKeys.Log.SendLogNotificationAsync,
+        await _logHubConnection.InvokeAsync(SignalRMethodKeys.Log.SendLogNotificationAsync,
             CreateLog($"{Products.Count}{requestedAmount} products added."));
 
-        driver.Quit();
     }
     
     private async Task UpdateOrderAsync(Guid orderId)
@@ -232,7 +230,7 @@ public class Crawler
         };
     
         // Send a POST request to Update the Order
-        var response = await client.PostAsJsonAsync("Orders/Update", orderDto);
+        var response = await _httpClient.PostAsJsonAsync("Orders/Update", orderDto);
         
         await HandleResponseFailure(response);
     }
@@ -242,7 +240,7 @@ public class Crawler
     {
         var statusMessage = EnumExtensions.GetDisplayName(status);
         
-        await logHubConnection.InvokeAsync(SignalRMethodKeys.Log.SendLogNotificationAsync, CreateLog(statusMessage));
+        await _logHubConnection.InvokeAsync(SignalRMethodKeys.Log.SendLogNotificationAsync, CreateLog(statusMessage));
         
         var orderEvent = new OrderEventDto()
         {
@@ -251,7 +249,7 @@ public class Crawler
         };
         
         // Send a POST request to Add the OrderEvent
-        var response = await client.PostAsJsonAsync("OrderEvents/Add", orderEvent);
+        var response = await _httpClient.PostAsJsonAsync("OrderEvents/Add", orderEvent);
         
         await HandleResponseFailure(response);
     }
@@ -261,9 +259,16 @@ public class Crawler
         // Check if the request was successful
         if (!response.IsSuccessStatusCode)
         {
-            await logHubConnection.InvokeAsync(SignalRMethodKeys.Log.SendLogNotificationAsync, 
+            await _logHubConnection.InvokeAsync(SignalRMethodKeys.Log.SendLogNotificationAsync, 
                 CreateLog($"HTTP request failed with status code: {response.StatusCode}"));
         }
+    }
+
+    private async Task DisposeAsync()
+    {
+        _driver.Quit();
+        await _logHubConnection.DisposeAsync();
+        await _orderHubConnection.DisposeAsync();
     }
 
     private LogDto CreateLog(string message) => new LogDto(message);
