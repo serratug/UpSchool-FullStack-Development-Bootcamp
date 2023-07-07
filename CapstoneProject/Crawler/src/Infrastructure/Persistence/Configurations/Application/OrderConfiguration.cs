@@ -1,8 +1,9 @@
 using Domain.Entities;
+using Domain.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Infrastructure.Persistence.Configurations;
+namespace Infrastructure.Persistence.Configurations.Application;
 
 public class OrderConfiguration:IEntityTypeConfiguration<Order>
 {
@@ -46,6 +47,9 @@ public class OrderConfiguration:IEntityTypeConfiguration<Order>
         builder.HasMany<OrderEvent>(x => x.OrderEvents)
             .WithOne(x => x.Order)
             .HasForeignKey(x => x.OrderId);
+        
+        builder.HasOne<User>().WithMany()
+            .HasForeignKey(x => x.UserId);
         
         builder.ToTable("Orders");
     }

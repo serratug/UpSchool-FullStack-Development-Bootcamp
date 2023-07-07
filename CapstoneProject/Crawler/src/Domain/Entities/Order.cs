@@ -5,6 +5,8 @@ namespace Domain.Entities;
 
 public class Order:EntityBase<Guid>
 {
+    public string UserId { get; set; }
+    
     public ProductAmountChoice ProductAmountChoice { get; set; }
     
     public int RequestedAmount { get; set; }
