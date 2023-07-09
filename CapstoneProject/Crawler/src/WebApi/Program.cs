@@ -1,5 +1,6 @@
 using Application;
 using Application.Common.Interfaces;
+using Domain.Settings;
 using Infrastructure;
 using Infrastructure.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +19,9 @@ builder.Services.AddControllers(opt =>
     opt.Filters.Add<ValidationFilter>();
     opt.Filters.Add<GlobalExceptionFilter>();
 });
+
+builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

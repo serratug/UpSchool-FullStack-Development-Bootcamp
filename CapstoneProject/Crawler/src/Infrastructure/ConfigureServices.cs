@@ -44,6 +44,7 @@ public static class ConfigureServices
         
         // Singleton Services
         services.AddSingleton<IEmailService, EmailManager>();
+        services.AddSingleton<IJwtService, JwtManager>();
 
         return services;
     }
