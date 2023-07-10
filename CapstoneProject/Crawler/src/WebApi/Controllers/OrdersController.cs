@@ -2,11 +2,13 @@ using Application.Features.Orders.Commands.Add;
 using Application.Features.Orders.Commands.Remove;
 using Application.Features.Orders.Commands.Update;
 using Application.Features.Orders.Queries.GetAll;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 
 namespace WebApi.Controllers;
 
+[Authorize]
 public class OrdersController : ApiControllerBase
 {
     [HttpPost("Add")]
