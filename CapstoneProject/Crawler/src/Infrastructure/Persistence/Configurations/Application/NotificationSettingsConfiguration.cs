@@ -1,4 +1,5 @@
 using Domain.Settings;
+using Domain.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -22,5 +23,9 @@ public class NotificationSettingsConfiguration:IEntityTypeConfiguration<Notifica
 
         // EmailAddress
         builder.Property(x => x.EmailAddress).IsRequired(false);
+        
+        // Relationships
+        builder.HasOne<User>().WithOne()
+            .HasForeignKey<NotificationSettings>(x => x.UserId);
     }
 }

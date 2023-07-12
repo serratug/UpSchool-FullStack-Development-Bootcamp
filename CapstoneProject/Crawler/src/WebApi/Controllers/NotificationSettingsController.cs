@@ -1,71 +1,46 @@
 using Application.Common.Interfaces;
 using Application.Common.Models.Settings;
 using Domain.Settings;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace WebApi.Controllers;
 
+[Authorize]
 public class NotificationSettingsController : ApiControllerBase
 {
     private readonly IApplicationDbContext _applicationDbContext;
+    private readonly ICurrentUserService _currentUserService;
 
-    public NotificationSettingsController(IApplicationDbContext applicationDbContext)
+    public NotificationSettingsController(IApplicationDbContext applicationDbContext, ICurrentUserService currentUserService)
     {
         _applicationDbContext = applicationDbContext;
+        _currentUserService = currentUserService;
     }
 
-    [HttpPost("Add")]
-    public async Task<IActionResult> AddAsync(NotificationSettingsDto settingsDto, CancellationToken cancellationToken)
-    {
-        var settings = new NotificationSettings()
-        {
-            PushNotification = settingsDto.PushNotification,
-            EmailNotification = settingsDto.EmailNotification,
-            EmailAddress = settingsDto.EmailAddress
-        };
-        
-        await _applicationDbContext.NotificationSettings.AddAsync(settings, cancellationToken);
-        
-        await _applicationDbContext.SaveChangesAsync(cancellationToken);
-        
-        return Ok(settings);
-    }
-    
     [HttpPut("Update")]
     public IActionResult Update(NotificationSettingsDto settingsDto)
     {
-        var settings = _applicationDbContext.NotificationSettings.FirstOrDefaultAsync(x => x.Id == 1).Result;
+        var settings = _applicationDbContext.NotificationSettings
+            .FirstOrDefaultAsync(x => x.UserId ==  _currentUserService.UserId).Result;
 
-        // Notification settings created for the first time
-        if (settings is null)
-        {
-            settings = new NotificationSettings()
-            {
-                PushNotification = settingsDto.PushNotification,
-                EmailNotification = settingsDto.EmailNotification,
-                EmailAddress = settingsDto.EmailAddress
-            };
-            _applicationDbContext.NotificationSettings.Add(settings);
-        }
-        else
-        {
-            settings.PushNotification = settingsDto.PushNotification;
-            settings.EmailNotification = settingsDto.EmailNotification;
-            settings.EmailAddress = settingsDto.EmailAddress;
+        settings.PushNotification = settingsDto.PushNotification;
+        settings.EmailNotification = settingsDto.EmailNotification;
+        settings.EmailAddress = settingsDto.EmailAddress;
 
-            _applicationDbContext.NotificationSettings.Update(settings);
-        }
+        _applicationDbContext.NotificationSettings.Update(settings);
 
         _applicationDbContext.SaveChanges();
         
         return Ok(settings);
     }
     
-    [HttpGet("GetFirst")]
-    public async Task<IActionResult> GetFirst()
+    [HttpGet("GetByUserId")]
+    public async Task<IActionResult> GetByUserId()
     {
-        var settings = await _applicationDbContext.NotificationSettings.FirstOrDefaultAsync();
+        var settings = _applicationDbContext.NotificationSettings
+            .FirstOrDefaultAsync(x => x.UserId ==  _currentUserService.UserId).Result;
 
         if (settings is null) return BadRequest();
 

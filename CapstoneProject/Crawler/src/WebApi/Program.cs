@@ -80,6 +80,7 @@ builder.Services.AddSignalR();
 
 builder.Services.AddScoped<IOrderHubService, OrderHubManager>();
 builder.Services.AddScoped<INotificationHubService, NotificationHubManager>();
+builder.Services.AddScoped<ICurrentUserService, CurrentUserManager>();
 
 builder.Services.AddMemoryCache();
 

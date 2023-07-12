@@ -21,6 +21,8 @@ namespace Infrastructure.Persistence.Migrations.Application
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    UserId = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     PushNotification = table.Column<bool>(type: "tinyint(1)", nullable: false, defaultValueSql: "0"),
                     EmailNotification = table.Column<bool>(type: "tinyint(1)", nullable: false, defaultValueSql: "0"),
                     EmailAddress = table.Column<string>(type: "longtext", nullable: true)

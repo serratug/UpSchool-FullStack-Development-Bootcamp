@@ -142,6 +142,10 @@ namespace Infrastructure.Persistence.Migrations.Application
                         .HasColumnType("tinyint(1)")
                         .HasDefaultValueSql("0");
 
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.HasKey("Id");
 
                     b.ToTable("NotificationSettings");
