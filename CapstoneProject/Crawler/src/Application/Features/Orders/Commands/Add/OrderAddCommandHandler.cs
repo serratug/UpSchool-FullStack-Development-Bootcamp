@@ -12,20 +12,25 @@ public class OrderAddCommandHandler:IRequestHandler<OrderAddCommand,Response<Ord
     private readonly IApplicationDbContext _applicationDbContext;
 
     private readonly IOrderHubService _orderHubService;
+    
+    private readonly ICurrentUserService _currentUserService;
 
-    public OrderAddCommandHandler(IApplicationDbContext applicationDbContext, IOrderHubService orderHubService)
+    public OrderAddCommandHandler(IApplicationDbContext applicationDbContext, IOrderHubService orderHubService, ICurrentUserService currentUserService)
     {
         _applicationDbContext = applicationDbContext;
         _orderHubService = orderHubService;
+        _currentUserService = currentUserService;
     }
 
     public async Task<Response<OrderDto>> Handle(OrderAddCommand request, CancellationToken cancellationToken)
     {
         var order = new Order()
         {
+            UserId = _currentUserService.UserId,
             ProductAmountChoice = request.ProductAmountChoice,
             ProductCrawlType = request.ProductCrawlType,
             CreatedOn = DateTimeOffset.Now,
+            CreatedByUserId = _currentUserService.UserId
         };
 
         order.RequestedAmount = order.ProductAmountChoice == ProductAmountChoice.All ? 0 : request.RequestedAmount;
@@ -44,10 +49,12 @@ public class OrderAddCommandHandler:IRequestHandler<OrderAddCommand,Response<Ord
         return new OrderDto()
         {
             Id = order.Id,
+            UserId = order.UserId,
             ProductAmountChoice = order.ProductAmountChoice,
             RequestedAmount = order.RequestedAmount,
             ProductCrawlType = order.ProductCrawlType,
-            CreatedOn = order.CreatedOn
+            CreatedOn = order.CreatedOn,
+            CreatedByUserId = order.CreatedByUserId,
         };
     }
 }

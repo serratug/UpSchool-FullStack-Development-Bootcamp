@@ -1,11 +1,11 @@
 using Domain.Enums;
 
-namespace Application.Features.Orders.Queries.GetById;
+namespace Application.Features.Orders.Queries.GetByCurrentUser;
 
-public class OrderGetByIdDto
+public class OrderGetByCurrentUserDto
 {
     public Guid Id { get; set; }
-    
+
     public string UserId { get; set; }
     
     public ProductAmountChoice ProductAmountChoice { get; set; }

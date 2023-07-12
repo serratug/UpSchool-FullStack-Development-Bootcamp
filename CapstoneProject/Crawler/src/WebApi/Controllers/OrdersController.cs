@@ -2,6 +2,9 @@ using Application.Features.Orders.Commands.Add;
 using Application.Features.Orders.Commands.Remove;
 using Application.Features.Orders.Commands.Update;
 using Application.Features.Orders.Queries.GetAll;
+using Application.Features.Orders.Queries.GetByCurrentUser;
+using Application.Features.Orders.Queries.GetById;
+using Application.Features.Orders.Queries.GetByUserId;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,6 +34,24 @@ public class OrdersController : ApiControllerBase
     
     [HttpPost("GetAll")]
     public async Task<IActionResult> GetAllAsync([FromBody] OrderGetAllQuery query)
+    {
+        return Ok(await Mediator.Send(query));
+    }
+    
+    [HttpPost("GetById")]
+    public async Task<IActionResult> GetByIdAsync([FromBody] OrderGetByIdQuery query)
+    {
+        return Ok(await Mediator.Send(query));
+    }
+    
+    [HttpPost("GetByUserId")]
+    public async Task<IActionResult> GetByUserIdAsync([FromBody] OrderGetByUserIdQuery query)
+    {
+        return Ok(await Mediator.Send(query));
+    }
+    
+    [HttpPost("GetByCurrentUser")]
+    public async Task<IActionResult> GetByCurrentUserAsync([FromBody] OrderGetByCurrentUserQuery query)
     {
         return Ok(await Mediator.Send(query));
     }

@@ -24,11 +24,13 @@ public class OrderGetByIdQueryHandler:IRequestHandler<OrderGetByIdQuery,OrderGet
         return new OrderGetByIdDto()
         {
             Id = order.Id,
+            UserId = order.UserId,
             ProductAmountChoice = order.ProductAmountChoice,
             RequestedAmount = order.RequestedAmount,
             TotalFoundAmount = order.TotalFoundAmount,
             ProductCrawlType = order.ProductCrawlType,
             CreatedOn = order.CreatedOn,
+            CreatedByUserId = order.CreatedByUserId,
         };
     }
 }

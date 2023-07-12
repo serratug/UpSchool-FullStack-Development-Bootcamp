@@ -1,34 +1,36 @@
 using Application.Common.Interfaces;
-using Application.Common.Models.Order;
 using Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Application.Features.Orders.Queries.GetAll;
+namespace Application.Features.Orders.Queries.GetByUserId;
 
-public class OrderGetAllQueryHandler:IRequestHandler<OrderGetAllQuery,List<OrderGetAllDto>>
+public class OrderGetByUserIdQueryHandler:IRequestHandler<OrderGetByUserIdQuery, List<OrderGetByUserIdDto>>
 {
     private readonly IApplicationDbContext _applicationDbContext;
 
-    public OrderGetAllQueryHandler(IApplicationDbContext applicationDbContext)
+    public OrderGetByUserIdQueryHandler(IApplicationDbContext applicationDbContext)
     {
         _applicationDbContext = applicationDbContext;
     }
 
-    public async Task<List<OrderGetAllDto>> Handle(OrderGetAllQuery request, CancellationToken cancellationToken)
+    public async Task<List<OrderGetByUserIdDto>> Handle(OrderGetByUserIdQuery request, CancellationToken cancellationToken)
     {
         var dbQuery = _applicationDbContext.Orders.AsQueryable();
-
-        var orders = await dbQuery
-            .Select(x=>MapToGetAllDto(x))
-            .ToListAsync(cancellationToken);
         
+        dbQuery = dbQuery.Where(x => x.UserId == request.UserId);
+        
+        var orders = await dbQuery
+            .Select(x=>MapToGetByUserIdDto(x))
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
+
         return orders;
     }
     
-    private static OrderGetAllDto MapToGetAllDto(Order order)
+    private static OrderGetByUserIdDto MapToGetByUserIdDto(Order order)
     {
-        return new OrderGetAllDto()
+        return new OrderGetByUserIdDto()
         {
             Id = order.Id,
             UserId = order.UserId,
