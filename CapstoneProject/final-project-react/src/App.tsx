@@ -14,14 +14,17 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import {Login} from "@mui/icons-material";
+import {Login, Logout} from "@mui/icons-material";
 import DashboardPage from "./pages/DashboardPage.tsx";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import {Route, Routes, useNavigate} from "react-router-dom";
 import OrdersPage from "./pages/OrdersPage.tsx";
 import LoginPage from "./pages/LoginPage.tsx";
 import SettingsPage from "./pages/SettingsPage.tsx";
 import NotificationsPage from "./pages/NotificationsPage.tsx";
 import UsersPage from "./pages/UsersPage.tsx";
+import {AppUserContext} from "./context/StateContext.tsx";
+import {LocalUser} from "./types/AuthTypes.ts";
+import {useState} from "react";
 
 const theme = createTheme({
     palette: {
@@ -105,6 +108,10 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 function App() {
 
+    const navigate = useNavigate();
+
+    const [appUser, setAppUser] = useState<LocalUser | undefined>(undefined);
+
     const [open, setOpen] = React.useState(false);
 
     const handleDrawerOpen = () => {
@@ -116,12 +123,22 @@ function App() {
     };
 
     const handleLoginOnClick = () => {
-        console.log("print");
+        navigate("/login");
     };
+
+    const handleLogout = () => {
+
+        localStorage.removeItem("crawler_user");
+
+        setAppUser(undefined);
+
+        navigate("/login");
+
+    }
 
 
     return (
-        <Router>
+        <AppUserContext.Provider value={{appUser, setAppUser}}>
             <ThemeProvider theme={theme}>
 
                 <Box sx={{ display: 'flex' }}>
@@ -147,12 +164,19 @@ function App() {
                                 </Typography>
                             </div>
                             <div>
-                                <IconButton color="inherit" onClick={handleLoginOnClick}>
-                                    <Typography variant="h6" component="h6" sx={{ marginRight: 1 }}>
-                                        Login
-                                    </Typography>
-                                    <Login />
-                                </IconButton>
+                                {!appUser &&
+                                    <IconButton color="inherit" onClick={handleLoginOnClick}>
+                                        <Typography variant="h6" component="h6" sx={{ marginRight: 1 }}>
+                                            Login
+                                        </Typography>
+                                        <Login />
+                                    </IconButton>
+                                }
+                                {appUser &&
+                                    <IconButton color="inherit" onClick={handleLogout}>
+                                        <Logout />
+                                    </IconButton>
+                                }
                             </div>
                         </Toolbar>
                     </AppBar>
@@ -182,7 +206,7 @@ function App() {
                 </Box>
 
             </ThemeProvider>
-        </Router>
+        </AppUserContext.Provider>
     )
 }
 
