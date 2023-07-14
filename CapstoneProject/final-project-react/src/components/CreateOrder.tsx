@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {useState} from 'react';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -7,26 +8,57 @@ import Typography from "@mui/material/Typography";
 import TextField from '@mui/material/TextField';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
+import Select, {SelectChangeEvent} from '@mui/material/Select';
 import Button from '@mui/material/Button';
+import api from "../utils/axiosInstance.ts";
+import {OrderAddCommand, ProductAmountChoice, ProductCrawlType} from "../types//OrderTypes.ts";
+
+function getEnumKeyByValue<T extends object, V extends T[keyof T]>(enumObj: T, value: V): keyof T | undefined {
+    return (Object.keys(enumObj) as Array<keyof T>).find((key) => enumObj[key] === value);
+}
 
 export default function CreateOrder(){
 
-    const [productAmountChoice, setProductAmountChoice] = React.useState('all');
     const [allSelected, setAllSelected] = React.useState(true);
-    const [productCrawlType, setProductCrawlType] = React.useState('');
+    const [orderAddCommand, setOrderAddCommand] = useState<OrderAddCommand>({
+        productAmountChoice: ProductAmountChoice.All,
+        requestedAmount: 0,
+        productCrawlType: ProductCrawlType.All,
+    });
 
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setProductAmountChoice((event.target as HTMLInputElement).value);
-        setAllSelected(productAmountChoice != 'all');
+    const handleSubmit = async (event:React.FormEvent) => {
+        console.log("handle submit");
+
+        event.preventDefault();
+
+        try {
+            const response = await api.post("/Orders/Add", orderAddCommand);
+            console.log(response.data.data);
+        }
+        catch (error){
+            console.log(error);
+        }
+    };
+
+    const handleChange = (event: any) => {
+        const { value } = event.target;
+        setOrderAddCommand((prevOrderAddCommand) => ({
+            ...prevOrderAddCommand,
+            productAmountChoice: +value,
+        }));
+        setAllSelected(+value === ProductAmountChoice.All);
     };
 
     const handleSelectChange = (event: SelectChangeEvent) => {
-        setProductCrawlType(event.target.value);
+        const { value } = event.target;
+        setOrderAddCommand((prevOrderAddCommand) => ({
+            ...prevOrderAddCommand,
+            productCrawlType: +value,
+        }));
     };
 
     return(
-        <>
+        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", }}>
             <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
                 <Typography component="h2" variant="h6" color="secondary" gutterBottom sx={{ alignSelf: 'flex-start' }}>
                     Create New Order
@@ -34,42 +66,61 @@ export default function CreateOrder(){
                 <RadioGroup
                     aria-labelledby="demo-controlled-radio-buttons-group"
                     name="controlled-radio-buttons-group"
-                    value={productAmountChoice}
+                    value={orderAddCommand.productAmountChoice}
                     onChange={handleChange}
                 >
-                    <FormControlLabel value="all" control={<Radio color="secondary" />} label="All" />
+                    <FormControlLabel value={ProductAmountChoice.All} control={<Radio color="secondary" />} label={getEnumKeyByValue(ProductAmountChoice, ProductAmountChoice.All)} />
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <FormControlLabel value="specific" control={<Radio color="secondary" />} label="Specfic Amount" />
+                        <FormControlLabel
+                            value={ProductAmountChoice.SpecificAmount}
+                            control={<Radio color="secondary" />}
+                            label={getEnumKeyByValue(ProductAmountChoice, ProductAmountChoice.SpecificAmount)} />
                         <TextField
                             label="Amount"
                             color="secondary"
                             focused
-                            disabled={allSelected}
+                            disabled={allSelected} // Disable the TextField when allSelected is true
                             sx={{ width: '130px' }}
                             size="small"
+                            value={orderAddCommand.requestedAmount}
+                            onChange={(event: any) => {
+                                const { value } = event.target;
+                                setOrderAddCommand((prevOrderAddCommand) => ({
+                                    ...prevOrderAddCommand,
+                                    requestedAmount: value,
+                                }));
+                            }}
+                            type="number"
                         />
                     </div>
 
                 </RadioGroup>
             </FormControl>
-            <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+            <FormControl sx={{ m: 1, minWidth: 120, textAlign: 'left' }} size="small">
                 <InputLabel id="demo-select-small-label" color="secondary">Product Type</InputLabel>
                 <Select
                     labelId="demo-select-small-label"
                     color="secondary"
                     id="demo-select-small"
-                    value={productCrawlType}
+                    value={orderAddCommand.productCrawlType.toString()}
                     label="Product Type"
                     onChange={handleSelectChange}
                 >
-                    <MenuItem value={10}>All</MenuItem>
-                    <MenuItem value={20}>On Discount</MenuItem>
-                    <MenuItem value={30}>Non Discount</MenuItem>
+                    <MenuItem value={ProductCrawlType.All}>{getEnumKeyByValue(ProductCrawlType, ProductCrawlType.All)}</MenuItem>
+                    <MenuItem value={ProductCrawlType.OnDiscount}>{getEnumKeyByValue(ProductCrawlType, ProductCrawlType.OnDiscount)}</MenuItem>
+                    <MenuItem value={ProductCrawlType.NonDiscount}>{getEnumKeyByValue(ProductCrawlType, ProductCrawlType.NonDiscount)}</MenuItem>
                 </Select>
             </FormControl>
             <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
-                <Button variant="contained" color="secondary" >Start</Button>
+                <Button
+                    variant="contained"
+                    color="secondary"
+                    type="submit"
+                    onClick={handleSubmit}
+                >
+                    Start
+                </Button>
             </FormControl>
-        </>
+        </form>
     );
 }
