@@ -11,11 +11,14 @@ import MenuItem from '@mui/material/MenuItem';
 import Select, {SelectChangeEvent} from '@mui/material/Select';
 import Button from '@mui/material/Button';
 import api from "../utils/axiosInstance.ts";
-import {OrderAddCommand, ProductAmountChoice, ProductCrawlType} from "../types//OrderTypes.ts";
+import {
+    OrderAddCommand,
+    ProductAmountChoice,
+    ProductAmountChoiceDisplay,
+    ProductCrawlType,
+    ProductCrawlTypeDisplay
+} from "../types//OrderTypes.ts";
 
-function getEnumKeyByValue<T extends object, V extends T[keyof T]>(enumObj: T, value: V): keyof T | undefined {
-    return (Object.keys(enumObj) as Array<keyof T>).find((key) => enumObj[key] === value);
-}
 
 export default function CreateOrder(){
 
@@ -69,12 +72,12 @@ export default function CreateOrder(){
                     value={orderAddCommand.productAmountChoice}
                     onChange={handleChange}
                 >
-                    <FormControlLabel value={ProductAmountChoice.All} control={<Radio color="secondary" />} label={getEnumKeyByValue(ProductAmountChoice, ProductAmountChoice.All)} />
+                    <FormControlLabel value={ProductAmountChoice.All} control={<Radio color="secondary" />} label={ProductAmountChoiceDisplay[ProductAmountChoice.All]} />
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <FormControlLabel
                             value={ProductAmountChoice.SpecificAmount}
                             control={<Radio color="secondary" />}
-                            label={getEnumKeyByValue(ProductAmountChoice, ProductAmountChoice.SpecificAmount)} />
+                            label={ProductAmountChoiceDisplay[ProductAmountChoice.SpecificAmount]} />
                         <TextField
                             label="Amount"
                             color="secondary"
@@ -97,7 +100,9 @@ export default function CreateOrder(){
                 </RadioGroup>
             </FormControl>
             <FormControl sx={{ m: 1, minWidth: 120, textAlign: 'left' }} size="small">
-                <InputLabel id="demo-select-small-label" color="secondary">Product Type</InputLabel>
+                <InputLabel id="demo-select-small-label" color="secondary">
+                    Product Type
+                </InputLabel>
                 <Select
                     labelId="demo-select-small-label"
                     color="secondary"
@@ -106,9 +111,11 @@ export default function CreateOrder(){
                     label="Product Type"
                     onChange={handleSelectChange}
                 >
-                    <MenuItem value={ProductCrawlType.All}>{getEnumKeyByValue(ProductCrawlType, ProductCrawlType.All)}</MenuItem>
-                    <MenuItem value={ProductCrawlType.OnDiscount}>{getEnumKeyByValue(ProductCrawlType, ProductCrawlType.OnDiscount)}</MenuItem>
-                    <MenuItem value={ProductCrawlType.NonDiscount}>{getEnumKeyByValue(ProductCrawlType, ProductCrawlType.NonDiscount)}</MenuItem>
+                    {Object.values(ProductCrawlType).map((crawlType) => (
+                        <MenuItem key={crawlType} value={crawlType}>
+                            {ProductCrawlTypeDisplay[crawlType as ProductCrawlType]}
+                        </MenuItem>
+                    ))}
                 </Select>
             </FormControl>
             <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
