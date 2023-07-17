@@ -31,7 +31,7 @@ public class Crawler
     private string access_token;
     
 
-    public Crawler()
+    public Crawler(HttpClient httpClient)
     {
         _driver = new ChromeDriver();
         
@@ -47,10 +47,7 @@ public class Crawler
             .WithAutomaticReconnect()
             .Build();
 
-        _httpClient = new HttpClient();
-        _httpClient.BaseAddress = new Uri($"{BASE_URL}api/");
-        _httpClient.DefaultRequestHeaders.Clear();
-        _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        _httpClient = httpClient;
     }
 
     public async Task StartAsync(CancellationToken cancellationToken)
@@ -99,7 +96,7 @@ public class Crawler
             Thread.Sleep(1000); // Wait for fun
             
             await _logHubConnection.InvokeAsync(SignalRMethodKeys.Log.SendLogNotificationAsync,
-                CreateLog("Navigated to 4teker.net"), access_token);
+                CreateLog("Navigated to 4teker.net"));
 
             var totalPages = _driver.FindElements(By.ClassName("page-number")).Last().Text;
 
