@@ -1,9 +1,6 @@
-using Application.Common.Models.Order;
-using Application.Features.Products.Commands.Add;
+using Application.Common.Models.CrawlerService;
 using Domain.Utilities;
-using MediatR;
 using Microsoft.AspNetCore.SignalR;
-using WebApi.Controllers;
 
 namespace WebApi.Hubs;
 
@@ -15,5 +12,14 @@ public class OrderHub : Hub
     {
         SenderConnectionId = Context.ConnectionId;
         return base.OnConnectedAsync();
+    }
+    
+    public async Task SendTokenAsync()
+    {
+        var accessToken = Context.GetHttpContext().Request.Query["access_token"];
+        
+        Console.WriteLine(accessToken);
+        
+        await Clients.All.SendAsync(SignalRMethodKeys.Log.SendToken, new WorkerServiceSendTokenDto(accessToken));
     }
 }

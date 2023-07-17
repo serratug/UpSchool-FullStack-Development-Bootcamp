@@ -13,6 +13,7 @@ public static class SignalRMethodKeys
     {
         public static string SendLogNotificationAsync => nameof(SendLogNotificationAsync);
         public static string NewLogAdded => nameof(NewLogAdded);
+        public static string SendToken => nameof(SendToken);
     }
     
     public static class Notification

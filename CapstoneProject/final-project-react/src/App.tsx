@@ -25,6 +25,8 @@ import UsersPage from "./pages/UsersPage.tsx";
 import {AppUserContext} from "./context/StateContext.tsx";
 import {LocalUser} from "./types/AuthTypes.ts";
 import {useState} from "react";
+import CrawlerLiveLogsPage from "./pages/CrawlerLiveLogsPage.tsx";
+import {SignalRProvider} from "./context/SignalRContext.tsx";
 
 const theme = createTheme({
     palette: {
@@ -139,73 +141,76 @@ function App() {
 
     return (
         <AppUserContext.Provider value={{appUser, setAppUser}}>
-            <ThemeProvider theme={theme}>
+            <SignalRProvider>
+                <ThemeProvider theme={theme}>
 
-                <Box sx={{ display: 'flex' }}>
+                    <Box sx={{ display: 'flex' }}>
 
-                    <CssBaseline />
-                    <AppBar position="fixed" open={open}>
-                        <Toolbar sx={{ displax: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <div style={{ display: 'flex', alignItems: 'center' }}>
-                                <IconButton
-                                    color="inherit"
-                                    aria-label="open drawer"
-                                    onClick={handleDrawerOpen}
-                                    edge="start"
-                                    sx={{
-                                        marginRight: 5,
-                                        ...(open && { display: 'none' }),
-                                    }}
-                                >
-                                    <MenuIcon />
+                        <CssBaseline />
+                        <AppBar position="fixed" open={open}>
+                            <Toolbar sx={{ displax: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                    <IconButton
+                                        color="inherit"
+                                        aria-label="open drawer"
+                                        onClick={handleDrawerOpen}
+                                        edge="start"
+                                        sx={{
+                                            marginRight: 5,
+                                            ...(open && { display: 'none' }),
+                                        }}
+                                    >
+                                        <MenuIcon />
+                                    </IconButton>
+                                    <Typography variant="h6" noWrap component="div">
+                                        AppBar Title
+                                    </Typography>
+                                </div>
+                                <div>
+                                    {!appUser &&
+                                        <IconButton color="inherit" onClick={handleLoginOnClick}>
+                                            <Typography variant="h6" component="h6" sx={{ marginRight: 1 }}>
+                                                Login
+                                            </Typography>
+                                            <Login />
+                                        </IconButton>
+                                    }
+                                    {appUser &&
+                                        <IconButton color="inherit" onClick={handleLogout}>
+                                            <Logout />
+                                        </IconButton>
+                                    }
+                                </div>
+                            </Toolbar>
+                        </AppBar>
+                        <Drawer variant="permanent" open={open}>
+                            <DrawerHeader>
+                                <IconButton onClick={handleDrawerClose}>
+                                    {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
                                 </IconButton>
-                                <Typography variant="h6" noWrap component="div">
-                                    AppBar Title
-                                </Typography>
-                            </div>
-                            <div>
-                                {!appUser &&
-                                    <IconButton color="inherit" onClick={handleLoginOnClick}>
-                                        <Typography variant="h6" component="h6" sx={{ marginRight: 1 }}>
-                                            Login
-                                        </Typography>
-                                        <Login />
-                                    </IconButton>
-                                }
-                                {appUser &&
-                                    <IconButton color="inherit" onClick={handleLogout}>
-                                        <Logout />
-                                    </IconButton>
-                                }
-                            </div>
-                        </Toolbar>
-                    </AppBar>
-                    <Drawer variant="permanent" open={open}>
-                        <DrawerHeader>
-                            <IconButton onClick={handleDrawerClose}>
-                                {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-                            </IconButton>
-                        </DrawerHeader>
-                        <Divider />
-                        <DrawerList />
+                            </DrawerHeader>
+                            <Divider />
+                            <DrawerList />
 
-                    </Drawer>
-                    <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-                        <DrawerHeader />
-                        <Routes>
-                            <Route path="/" element={<DashboardPage />} />
-                            <Route path="/orders" element={<OrdersPage />} />
-                            <Route path="/users" element={<UsersPage />} />
-                            <Route path="/notifications" element={<NotificationsPage />} />
-                            <Route path="/settings" element={<SettingsPage />} />
-                            <Route path="/login" element={<LoginPage />} />
-                        </Routes>
+                        </Drawer>
+                        <Box component="main" sx={{ flexGrow: 1, p: 3, alignItems: "flex-start", }}>
+                            <DrawerHeader />
+                            <Routes>
+                                <Route path="/" element={<DashboardPage />} />
+                                <Route path="/orders" element={<OrdersPage />} />
+                                <Route path="/users" element={<UsersPage />} />
+                                <Route path="/notifications" element={<NotificationsPage />} />
+                                <Route path="/settings" element={<SettingsPage />} />
+                                <Route path="/login" element={<LoginPage />} />
+                                <Route path="/crawlerlivelogs" element={<CrawlerLiveLogsPage />} />
+                            </Routes>
+
+                        </Box>
 
                     </Box>
 
-                </Box>
-
-            </ThemeProvider>
+                </ThemeProvider>
+            </SignalRProvider>
         </AppUserContext.Provider>
     )
 }

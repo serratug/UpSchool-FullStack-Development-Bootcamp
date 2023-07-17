@@ -4,6 +4,7 @@ using System.Net.Http.Json;
 using Application.Common.Models.Order;
 using Application.Common.Models.Product;
 using Application.Common.Extensions;
+using Application.Common.Models.CrawlerService;
 using Application.Common.Models.Log;
 using Domain.Enums;
 using Domain.Utilities;
@@ -19,13 +20,15 @@ public class Crawler
 
     private readonly List<ProductDto> Products;
 
-    private readonly HubConnection _logHubConnection;
+    private HubConnection _logHubConnection;
 
-    private readonly HubConnection _orderHubConnection;
+    private HubConnection _orderHubConnection;
 
-    private readonly HttpClient _httpClient;
+    private HttpClient _httpClient;
 
     private const string BASE_URL = "http://localhost:5108/";
+
+    private string access_token;
     
 
     public Crawler()
@@ -33,27 +36,43 @@ public class Crawler
         _driver = new ChromeDriver();
         
         Products = new List<ProductDto>();
-
-        _logHubConnection = new HubConnectionBuilder()
-            .WithUrl($"{BASE_URL}Hubs/LogHub")
-            .WithAutomaticReconnect()
-            .Build();
-
+        
         _orderHubConnection = new HubConnectionBuilder()
             .WithUrl($"{BASE_URL}Hubs/OrderHub")
             .WithAutomaticReconnect()
             .Build();
         
+        _logHubConnection = new HubConnectionBuilder()
+            .WithUrl($"{BASE_URL}Hubs/LogHub")
+            .WithAutomaticReconnect()
+            .Build();
 
         _httpClient = new HttpClient();
         _httpClient.BaseAddress = new Uri($"{BASE_URL}api/");
         _httpClient.DefaultRequestHeaders.Clear();
         _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
     }
-    
+
     public async Task StartAsync(CancellationToken cancellationToken)
     {
         if (cancellationToken.IsCancellationRequested) await DisposeAsync();
+        
+        try
+        {
+            await _orderHubConnection.StartAsync();
+            
+            await _logHubConnection.StartAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error starting SignalR connection: {ex.Message}");
+        }
+        
+        _orderHubConnection.On<WorkerServiceSendTokenDto>(SignalRMethodKeys.Log.SendToken, (tokenDto) =>
+        {
+            access_token = tokenDto.AccessToken;
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", access_token);
+        });
 
         // Waiting for the signal that indicates a POST request has been sent to Add an Order.
         _orderHubConnection.On<OrderDto>(SignalRMethodKeys.Order.Added, async (orderDto) =>
@@ -67,19 +86,8 @@ public class Crawler
             
         });
 
-        try
-        {
-            await _logHubConnection.StartAsync();
-            
-            await _orderHubConnection.StartAsync();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error starting SignalR connection: {ex.Message}");
-        }
-
     }
-    
+
     public async Task CrawlProductsAsync(OrderDto orderDto)
     {
         try
@@ -91,7 +99,7 @@ public class Crawler
             Thread.Sleep(1000); // Wait for fun
             
             await _logHubConnection.InvokeAsync(SignalRMethodKeys.Log.SendLogNotificationAsync,
-                CreateLog("Navigated to 4teker.net"));
+                CreateLog("Navigated to 4teker.net"), access_token);
 
             var totalPages = _driver.FindElements(By.ClassName("page-number")).Last().Text;
 
