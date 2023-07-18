@@ -1,9 +1,11 @@
 import {useContext, useEffect, useState} from "react";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
-import {LocalJwt} from "../types/AuthTypes.ts";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
 import {Log} from "../types/LogTypes.ts";
 import {SignalRContext} from "../context/SignalRContext.tsx";
+import '../App.css'
 
 
 function CrawlerLiveLogsPage() {
@@ -15,23 +17,13 @@ function CrawlerLiveLogsPage() {
 
     useEffect(() => {
         (async () => {
-            const jwtJson = localStorage.getItem("crawler_user");
+            await orderHubConnection?.invoke<string>("SendTokenAsync");
 
-            if (jwtJson) {
-                const localJwt: LocalJwt = JSON.parse(jwtJson);
+            logHubConnection?.on("NewLogAdded", (log: Log) => {
+                setLogs((prevLogs) => [...prevLogs, log]);
+            });
 
-                console.log(localJwt.accessToken);
-
-                await orderHubConnection?.invoke<string>("SendTokenAsync");
-
-                logHubConnection?.on("NewLogAdded", (log: Log) => {
-                    console.log("log sinyali geldi.");
-                    console.log(log.message);
-                    setLogs((prevLogs) => [...prevLogs, log]);
-                });
-
-                return;
-            }
+            return;
         })();
     }, []);
 
@@ -42,28 +34,35 @@ function CrawlerLiveLogsPage() {
                 justifyContent: "center",
                 alignItems: "flex-start", // Align content to the top
                 color: "secondary",
-                height: "90vh",
+                height: "80vh",
             }}
         >
             <Paper
                 sx={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "flex-start", // Align content to the top
                     minHeight: "50vh",
                     height: "max-content",
                     width: "70vw",
-                    p: 2,
-                    pl: 4,
-                    pr: 4,
+                    maxHeight: "80vh",
+                    overflow: "auto",
+                    p: 0,
                 }}
             >
-                <ul style={{ width: "100vw", textAlign: "left" }}>
+                <div className="top">
+                    <div className="btns">
+                        <span className="circle red"></span>
+                        <span className="circle yellow"></span>
+                        <span className="circle green"></span>
+                    </div>
+                    <div className="title">bash -- 70x32</div>
+                </div>
+
+                <List sx={{width: "60vw", textAlign: "left"}}>
                     {logs.map((log, index) => (
-                        <li key={index}>{log.message}</li>
+                        <ListItem key={index}>{log.message} some text</ListItem>
                     ))}
-                </ul>
+                </List>
             </Paper>
+
         </Box>
     );
 }
