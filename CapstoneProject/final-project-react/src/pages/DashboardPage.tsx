@@ -4,9 +4,21 @@ import Paper from "@mui/material/Paper";
 import RecentOrders from "../components/RecentOrders.tsx";
 import CreateOrder from "../components/CreateOrder.tsx";
 import Statistics from "../components/Statistics.tsx";
+import {useContext, useEffect} from "react";
+import {SignalRContext} from "../context/SignalRContext.tsx";
 
 
 function DashboardPage() {
+
+    const { orderHubConnection } = useContext(SignalRContext);
+
+    useEffect(() => {
+        (async () => {
+            await orderHubConnection?.invoke<string>("SendTokenAsync");
+
+            return;
+        })();
+    }, []);
 
     return(
         <>

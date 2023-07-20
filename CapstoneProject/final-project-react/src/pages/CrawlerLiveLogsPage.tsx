@@ -10,15 +10,13 @@ import '../App.css'
 
 function CrawlerLiveLogsPage() {
 
-    const { logHubConnection, orderHubConnection } = useContext(SignalRContext);
+    const { logHubConnection } = useContext(SignalRContext);
 
     const [logs, setLogs] = useState<Log[]>([]);
 
 
     useEffect(() => {
         (async () => {
-            await orderHubConnection?.invoke<string>("SendTokenAsync");
-
             logHubConnection?.on("NewLogAdded", (log: Log) => {
                 setLogs((prevLogs) => [...prevLogs, log]);
             });
@@ -58,7 +56,7 @@ function CrawlerLiveLogsPage() {
 
                 <List sx={{width: "60vw", textAlign: "left"}}>
                     {logs.map((log, index) => (
-                        <ListItem key={index}>{log.message} some text</ListItem>
+                        <ListItem key={index}>{log.message}</ListItem>
                     ))}
                 </List>
             </Paper>

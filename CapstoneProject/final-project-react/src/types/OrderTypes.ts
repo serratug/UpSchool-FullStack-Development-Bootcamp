@@ -4,6 +4,20 @@ export type OrderAddCommand = {
     productCrawlType: ProductCrawlType,
 }
 
+export type OrderGetByUserIdDto = {
+    id: string,
+    userId: string,
+    productAmountChoice: ProductAmountChoice,
+    requestedAmount: number,
+    totalFoundAmount: number,
+    productCrawlType: ProductCrawlType,
+    createdOn: Date,
+}
+
+export type OrderGetByUserIdQuery = {
+    userId: string,
+}
+
 export enum ProductCrawlType {
     All = 1,
     OnDiscount = 2,

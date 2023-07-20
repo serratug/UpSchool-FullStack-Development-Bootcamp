@@ -7,6 +7,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Typography from "@mui/material/Typography";
 import '../App.css';
+import { useNavigate } from "react-router-dom";
 
 function createData(
     id: string,
@@ -25,11 +26,15 @@ const rows = [
     createData('8s7rnsbgvsg8jsdf', '13.06.2023', 'All', 14, 14),
 ];
 
-function preventDefault(event: React.MouseEvent) {
-    event.preventDefault();
-}
 
 export default function RecentOrders() {
+
+    const navigate = useNavigate();
+
+    function navigateToOrdersPage() {
+        navigate("/orders");
+    }
+
     return (
         <React.Fragment>
             <Typography component="h2" variant="h6" color="secondary" gutterBottom sx={{ alignSelf: 'flex-start' }}>
@@ -62,7 +67,7 @@ export default function RecentOrders() {
                     ))}
                 </TableBody>
             </Table>
-            <Link color="secondary" href="#" onClick={preventDefault} sx={{ alignSelf: 'flex-start', mt: 3 }}>
+            <Link color="secondary" href="#" onClick={navigateToOrdersPage} sx={{ alignSelf: 'flex-start', mt: 3 }}>
                 See more orders
             </Link>
         </React.Fragment>
