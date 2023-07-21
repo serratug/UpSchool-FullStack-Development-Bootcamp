@@ -7,6 +7,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
+import Box from "@mui/material/Box";
 import {useContext, useEffect, useState} from "react";
 import {
     OrderGetByUserIdDto,
@@ -55,49 +56,59 @@ function OrdersPage() {
 
 
     return(
-        <Paper
+        <Box
             sx={{
-                p: 2,
-                display: 'flex',
-                flexDirection: 'column',
-                minHeight: "50vh",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "flex-start", // Align content to the top
+                color: "secondary",
                 height: "max-content",
-                width: "70vw",
             }}
         >
-            <React.Fragment>
-                <Typography component="h2" variant="h6" color="secondary" gutterBottom sx={{ alignSelf: 'flex-start' }}>
-                    Orders
-                </Typography>
-                <Table size="small">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Id</TableCell>
-                            <TableCell align="right">Date</TableCell>
-                            <TableCell align="right">Type</TableCell>
-                            <TableCell align="right">Requested</TableCell>
-                            <TableCell align="right">Found</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {orderList.map((row) => (
-                            <StyledTableRow
-                                key={row.id}
-                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                            >
-                                <TableCell component="th" scope="row">
-                                    {row.id}
-                                </TableCell>
-                                <TableCell align="right">{row.createdOn.toString()}</TableCell>
-                                <TableCell align="right">{row.productCrawlType}</TableCell>
-                                <TableCell align="right">{row.requestedAmount}</TableCell>
-                                <TableCell align="right">{row.totalFoundAmount}</TableCell>
-                            </StyledTableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </React.Fragment>
-        </Paper>
+            <Paper
+                sx={{
+                    p: 2,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    minHeight: "50vh",
+                    height: "max-content",
+                    width: "70vw",
+                }}
+            >
+                <React.Fragment>
+                    <Typography component="h2" variant="h6" color="secondary" gutterBottom sx={{ alignSelf: 'flex-start' }}>
+                        Orders
+                    </Typography>
+                    <Table size="small">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>Id</TableCell>
+                                <TableCell align="right">Date</TableCell>
+                                <TableCell align="right">Type</TableCell>
+                                <TableCell align="right">Requested</TableCell>
+                                <TableCell align="right">Found</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {orderList.map((row) => (
+                                <StyledTableRow
+                                    key={row.id}
+                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                >
+                                    <TableCell component="th" scope="row">
+                                        {row.id}
+                                    </TableCell>
+                                    <TableCell align="right">{row.createdOn.toString()}</TableCell>
+                                    <TableCell align="right">{row.productCrawlType}</TableCell>
+                                    <TableCell align="right">{row.requestedAmount}</TableCell>
+                                    <TableCell align="right">{row.totalFoundAmount}</TableCell>
+                                </StyledTableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </React.Fragment>
+            </Paper>
+        </Box>
     );
 }
 

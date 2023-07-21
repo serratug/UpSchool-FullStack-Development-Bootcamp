@@ -193,8 +193,17 @@ function App() {
                             <DrawerList />
 
                         </Drawer>
-                        <Box component="main" sx={{ flexGrow: 1, p: 3, alignItems: "flex-start", }}>
-                            <DrawerHeader />
+                        <Box component="main"
+                             sx={{
+                                 width: "max-content",
+                                 flexGrow: 1,
+                                 p: 0,
+                                 m: 0,
+                                 alignItems: "flex-start",
+                                 justifyContent: "flex-start",
+                            }}
+                        >
+
                             <Routes>
                                 <Route path="/" element={<DashboardPage />} />
                                 <Route path="/orders" element={<OrdersPage />} />
