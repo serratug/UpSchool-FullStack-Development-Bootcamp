@@ -35,7 +35,7 @@ export const SignalRProvider: React.FC<React.PropsWithChildren> = ({ children })
         const createHubConnections = async () => {
 
             const orderHub = new HubConnectionBuilder().withUrl(`${BASE_SIGNALR_URL}Hubs/OrderHub?access_token=${token}`).build();
-            const logHub = new HubConnectionBuilder().withUrl(`${BASE_SIGNALR_URL}Hubs/LogHub`).build();
+            const logHub = new HubConnectionBuilder().withUrl(`${BASE_SIGNALR_URL}Hubs/LogHub?access_token=${token}`).build();
             const notificationHub = new HubConnectionBuilder().withUrl(`${BASE_SIGNALR_URL}Hubs/NotificationHub`).build();
 
             if (orderHub.state === 'Disconnected') {

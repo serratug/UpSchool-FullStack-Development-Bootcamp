@@ -14,12 +14,4 @@ public class OrderHub : Hub
         return base.OnConnectedAsync();
     }
     
-    public async Task SendTokenAsync()
-    {
-        var accessToken = Context.GetHttpContext().Request.Query["access_token"];
-        
-        Console.WriteLine(accessToken);
-        
-        await Clients.All.SendAsync(SignalRMethodKeys.Log.SendToken, new WorkerServiceSendTokenDto(accessToken));
-    }
 }

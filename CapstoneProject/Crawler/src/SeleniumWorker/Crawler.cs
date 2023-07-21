@@ -65,7 +65,7 @@ public class Crawler
             Console.WriteLine($"Error starting SignalR connection: {ex.Message}");
         }
         
-        _orderHubConnection.On<WorkerServiceSendTokenDto>(SignalRMethodKeys.Log.SendToken, (tokenDto) =>
+        _logHubConnection.On<WorkerServiceSendTokenDto>(SignalRMethodKeys.Log.SendToken, (tokenDto) =>
         {
             access_token = tokenDto.AccessToken;
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", access_token);
