@@ -30,8 +30,8 @@ public class ProductGetAllQueryHandler:IRequestHandler<ProductGetAllQuery,Pagina
 
     public async Task<PaginatedList<ProductGetAllDto>> Handle(ProductGetAllQuery request, CancellationToken cancellationToken)
     {
-        if (_memoryCache.TryGetValue(PRODUCTS_KEY,out List<ProductGetAllDto> cachedProducts))
-            return PaginatedList<ProductGetAllDto>.Create(cachedProducts, request.PageNumber, request.PageSize);
+        // if (_memoryCache.TryGetValue(PRODUCTS_KEY,out List<ProductGetAllDto> cachedProducts))
+        //     return PaginatedList<ProductGetAllDto>.Create(cachedProducts, request.PageNumber, request.PageSize);
         
         var dbQuery = _applicationDbContext.Products.AsQueryable();
         

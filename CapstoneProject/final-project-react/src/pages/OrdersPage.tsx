@@ -15,6 +15,13 @@ import {
 } from "../types/OrderTypes.ts";
 import {AppUserContext} from "../context/StateContext.tsx";
 import {styled} from "@mui/material/styles";
+import IconButton from "@mui/material/IconButton";
+import {Visibility} from "@mui/icons-material";
+import ProductsModal from "../components/ProductsModal.tsx";
+import { Button } from "@mui/material";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
+
 
 const StyledTableRow = styled(TableRow)(() => ({
     '&:nth-of-type(even)': {
@@ -31,6 +38,20 @@ function OrdersPage() {
 
     const [orderList, setOrderList] = useState<OrderGetByUserIdDto[]>([]);
 
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
+
+    const handleOpenModal = (orderId: string) => {
+        setSelectedOrderId(orderId);
+        setIsModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+        setSelectedOrderId(null);
+    };
+
 
     useEffect(() => {
 
@@ -43,7 +64,6 @@ function OrdersPage() {
             try {
                 const response = await api.post("/Orders/GetByUserId", orderGetByUserIdQuery);
                 setOrderList(response.data)
-                console.log(response.data);
             }
             catch (error){
                 console.log(error);
@@ -52,7 +72,32 @@ function OrdersPage() {
 
         fetchOrders();
 
-    },[]);
+    });
+
+    // Export the table data to Excel, excluding "Products" and "Events" columns
+    const handleExportToExcel = () => {
+        const tableDataForExport = orderList.map(
+            ({ id, createdOn, productCrawlType, requestedAmount, totalFoundAmount }) => ({
+                id,
+                createdOn: createdOn.toString(),
+                productCrawlType,
+                requestedAmount,
+                totalFoundAmount,
+            })
+        );
+
+        const worksheet = XLSX.utils.json_to_sheet(tableDataForExport);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+        const excelBuffer = XLSX.write(workbook, {
+            bookType: "xlsx",
+            type: "array",
+        });
+        const data = new Blob([excelBuffer], {
+            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        });
+        saveAs(data, "orders_data.xlsx");
+    };
 
 
     return(
@@ -63,6 +108,7 @@ function OrdersPage() {
                 alignItems: "flex-start", // Align content to the top
                 color: "secondary",
                 height: "max-content",
+                pt: 8,
             }}
         >
             <Paper
@@ -76,9 +122,18 @@ function OrdersPage() {
                 }}
             >
                 <React.Fragment>
-                    <Typography component="h2" variant="h6" color="secondary" gutterBottom sx={{ alignSelf: 'flex-start' }}>
-                        Orders
-                    </Typography>
+                    <div style={{display: "flex", justifyContent: "space-between", marginBottom: 6}}>
+                        <Typography component="h2" variant="h6" color="secondary" gutterBottom sx={{ alignSelf: 'flex-start' }}>
+                            Orders
+                        </Typography>
+                        <Button
+                            variant="contained"
+                            color="secondary"
+                            onClick={handleExportToExcel}
+                        >
+                            Export to Excel
+                        </Button>
+                    </div>
                     <Table size="small">
                         <TableHead>
                             <TableRow>
@@ -87,6 +142,8 @@ function OrdersPage() {
                                 <TableCell align="right">Type</TableCell>
                                 <TableCell align="right">Requested</TableCell>
                                 <TableCell align="right">Found</TableCell>
+                                <TableCell align="right">Products</TableCell>
+                                <TableCell align="right">Events</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -102,6 +159,17 @@ function OrdersPage() {
                                     <TableCell align="right">{row.productCrawlType}</TableCell>
                                     <TableCell align="right">{row.requestedAmount}</TableCell>
                                     <TableCell align="right">{row.totalFoundAmount}</TableCell>
+                                    <TableCell align="right">
+                                        <IconButton color="inherit" onClick={() => handleOpenModal(row.id)}>
+                                            <Visibility />
+                                        </IconButton>
+                                        <ProductsModal open={isModalOpen} onClose={handleCloseModal} orderId={selectedOrderId ?? ""} />
+                                    </TableCell>
+                                    <TableCell align="right">
+                                        <IconButton color="inherit">
+                                            <Visibility />
+                                        </IconButton>
+                                    </TableCell>
                                 </StyledTableRow>
                             ))}
                         </TableBody>
