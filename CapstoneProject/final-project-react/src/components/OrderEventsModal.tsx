@@ -83,8 +83,18 @@ const OrderEventsModal: React.FC<ModalProps> = ({ open, onClose, orderId }) => {
                                 <TableCell align="center">
                                     {OrderStatusDisplay[orderEvent.status]}
                                 </TableCell>
+
                                 <TableCell align="center">
-                                    {orderEvent.createdOn.toString()}
+                                    {orderEvent.createdOn
+                                        ? new Date(orderEvent.createdOn).toLocaleString("tr-TR", {
+                                            year: "numeric",
+                                            month: "numeric",
+                                            day: "numeric",
+                                            hour: "numeric",
+                                            minute: "numeric",
+                                            second: "numeric",
+                                        })
+                                        : "N/A"}
                                 </TableCell>
                             </TableRow>
                         ))}

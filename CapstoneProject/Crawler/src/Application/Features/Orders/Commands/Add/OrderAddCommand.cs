@@ -12,6 +12,5 @@ public class OrderAddCommand:IRequest<Response<OrderDto>>
     public int RequestedAmount { get; set; }
     
     public ProductCrawlType ProductCrawlType { get; set; }
-
-    public DateTimeOffset CreatedOn { get; set; }   
+    
 }

@@ -30,7 +30,7 @@ function CrawlerLiveLogsPage() {
             sx={{
                 display: "flex",
                 justifyContent: "center",
-                alignItems: "flex-start", // Align content to the top
+                alignItems: "flex-start",
                 color: "secondary",
                 height: "80vh",
             }}
@@ -54,10 +54,26 @@ function CrawlerLiveLogsPage() {
                     <div className="title">bash -- 70x32</div>
                 </div>
 
-                <List sx={{width: "60vw", textAlign: "left"}}>
-                    {logs.map((log, index) => (
-                        <ListItem key={index}>{log.message}</ListItem>
-                    ))}
+                <List sx={{ width: "60vw", textAlign: "left" }}>
+                    {logs.map((log, index) => {
+                        const sentOnDate = log.sentOn ? new Date(log.sentOn) : null;
+                        const formattedDate = sentOnDate
+                            ? sentOnDate.toLocaleString("tr-TR", {
+                                year: "numeric",
+                                month: "numeric",
+                                day: "numeric",
+                                hour: "numeric",
+                                minute: "numeric",
+                                second: "numeric",
+                            })
+                            : "N/A";
+
+                        return (
+                            <ListItem key={index}>
+                                {log.message} | {formattedDate}
+                            </ListItem>
+                        );
+                    })}
                 </List>
             </Paper>
 

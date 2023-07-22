@@ -172,13 +172,13 @@ function OrdersPage() {
                                     <TableCell align="right">{row.requestedAmount}</TableCell>
                                     <TableCell align="right">{row.totalFoundAmount}</TableCell>
                                     <TableCell align="right">
-                                        <IconButton color="inherit" onClick={() => handleOpenOrderEventsModal(row.id)}>
+                                        <IconButton color="secondary" onClick={() => handleOpenOrderEventsModal(row.id)}>
                                             <Visibility />
                                         </IconButton>
                                         <OrderEventsModal open={isOrderEventsModalOpen} onClose={handleCloseOrderEventsModal} orderId={selectedOrderId ?? ""} />
                                     </TableCell>
                                     <TableCell align="right">
-                                        <IconButton color="inherit" onClick={() => handleOpenProductsModal(row.id)}>
+                                        <IconButton color="secondary" onClick={() => handleOpenProductsModal(row.id)}>
                                             <Visibility />
                                         </IconButton>
                                         <ProductsModal open={isProductsModalOpen} onClose={handleCloseProductsModal} orderId={selectedOrderId ?? ""} />

@@ -1,4 +1,4 @@
 export type Log = {
     message?: string;
-    sentOn?: string;
+    sentOn?: Date;
 };

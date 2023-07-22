@@ -35,6 +35,7 @@ const ProductsModal: React.FC<ModalProps> = ({ open, onClose, orderId }) => {
 
     useEffect(() => {
         if (open && orderId) {
+            setPaginatedProducts(null);
             handleLoadProducts(null, currentPage);
         } else {
             setCurrentPage(1); // Reset the page to 1 when the modal is closed
@@ -65,7 +66,8 @@ const ProductsModal: React.FC<ModalProps> = ({ open, onClose, orderId }) => {
 
     const handleClose = () => {
         onClose();
-        setCurrentPage(1); // Reset the page to 1 when the modal is closed
+        setCurrentPage(1);
+        setPaginatedProducts(null);
     };
 
 
@@ -93,7 +95,7 @@ const ProductsModal: React.FC<ModalProps> = ({ open, onClose, orderId }) => {
                     <TableBody>
                         {paginatedProducts?.items.map((product, index) => (
                             <TableRow key={index}>
-                                <TableCell>
+                                <TableCell style={{backgroundColor: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
                                     <img
                                         alt=""
                                         src={product.picture}

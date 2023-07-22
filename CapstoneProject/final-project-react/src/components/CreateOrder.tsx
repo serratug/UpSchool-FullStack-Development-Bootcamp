@@ -18,9 +18,13 @@ import {
     ProductCrawlType,
     ProductCrawlTypeDisplay
 } from "../types//OrderTypes.ts";
+import {useNavigate} from "react-router-dom";
+import {toast} from "react-toastify";
 
 
 export default function CreateOrder(){
+
+    const navigate = useNavigate();
 
     const [allSelected, setAllSelected] = React.useState(true);
     const [orderAddCommand, setOrderAddCommand] = useState<OrderAddCommand>({
@@ -36,7 +40,8 @@ export default function CreateOrder(){
 
         try {
             const response = await api.post("/Orders/Add", orderAddCommand);
-            console.log(response.data.data);
+            if (response.status === 200) navigate("/crawlerlivelogs");
+            else toast.error(response.statusText);
         }
         catch (error){
             console.log(error);
