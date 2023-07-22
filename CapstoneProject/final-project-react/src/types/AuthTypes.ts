@@ -16,3 +16,10 @@ export type LocalJwt = {
     accessToken:string,
     expires:string,
 }
+
+export type AuthRegisterCommand = {
+    firstName: string,
+    lastName: string,
+    email: string,
+    password: string,
+}

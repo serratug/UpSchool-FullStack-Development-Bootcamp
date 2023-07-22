@@ -1,5 +1,5 @@
 import React, {useContext, useState} from "react";
-import {AuthLoginCommand, LocalJwt} from "../types/AuthTypes.ts";
+import {AuthLoginCommand, AuthRegisterCommand, LocalJwt} from "../types/AuthTypes.ts";
 import api from "../utils/axiosInstance.ts";
 import {getClaimsFromJwt} from "../utils/jwtHelper.ts";
 import {AppUserContext} from "../context/StateContext.tsx";
@@ -12,6 +12,7 @@ import {Google} from "@mui/icons-material";
 import {useNavigate} from "react-router-dom";
 import Paper from "@mui/material/Paper";
 import Box from '@mui/material/Box';
+import Divider from '@mui/material/Divider';
 
 const BASE_URL = import.meta.env.VITE_API_URL;
 
@@ -22,7 +23,15 @@ function LoginPage() {
 
     const [authLoginCommand, setAuthLoginCommand] = useState<AuthLoginCommand>({email:"",password:""});
 
-    const handleSubmit = async (event:React.FormEvent) => {
+    const [authRegisterCommand, setAuthRegisterCommand] = useState<AuthRegisterCommand>
+    ({
+        firstName: "",
+        lastName: "",
+        email: "",
+        password: "",
+    });
+
+    const handleLoginSubmit = async (event:React.FormEvent) => {
 
         event.preventDefault();
 
@@ -52,7 +61,32 @@ function LoginPage() {
 
     }
 
-    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleRegisterSubmit = async (event:React.FormEvent) => {
+
+        event.preventDefault();
+
+        try {
+            const response = await api.post("/Authentication/Register", authRegisterCommand);
+
+            if(response.status === 200){
+                navigate("/");
+            } else{
+                toast.error(response.statusText);
+            }
+        } catch (error) {
+            toast.error("Something went wrong!");
+        }
+
+    }
+
+    const handleRegisterInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setAuthRegisterCommand({
+            ...authRegisterCommand,
+            [event.target.name]: event.target.value
+        });
+    }
+
+    const handleLoginInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setAuthLoginCommand({
             ...authLoginCommand,
             [event.target.name]: event.target.value
@@ -81,26 +115,29 @@ function LoginPage() {
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
-                    height: "50vh",
-                    width: "45vw",
-                    p: 8,
+                    flexWrap: "wrap",
+                    height: "max-content",
+                    width: "70vw",
+                    p: "7vh",
                 }}
             >
-                <Grid container spacing={2} justifyContent="center">
+                <Grid container spacing={2} justifyContent="center" width="30vw"
+                      style={{minWidth: "200px", maxWidth: "300px"}}
+                >
                     <Grid item xs={12}>
                         <Typography variant="h5" align="center" color="secondary">
                             Log-in to your account
                         </Typography>
                     </Grid>
                     <Grid item xs={12}>
-                        <form onSubmit={handleSubmit}>
+                        <form onSubmit={handleLoginSubmit}>
                             <Grid container spacing={2}>
                                 <Grid item xs={12}>
                                     <TextField
                                         fullWidth
                                         placeholder="Email"
                                         value={authLoginCommand.email}
-                                        onChange={handleInputChange}
+                                        onChange={handleLoginInputChange}
                                         name="email"
                                         color="secondary"
                                     />
@@ -111,7 +148,7 @@ function LoginPage() {
                                         placeholder="Password"
                                         type="password"
                                         value={authLoginCommand.password}
-                                        onChange={handleInputChange}
+                                        onChange={handleLoginInputChange}
                                         name="password"
                                         color="secondary"
                                     />
@@ -122,7 +159,7 @@ function LoginPage() {
                                         variant="contained"
                                         color="secondary"
                                         type="submit"
-                                        onClick={handleSubmit}
+                                        onClick={handleLoginSubmit}
                                     >
                                         Login
                                     </Button>
@@ -137,6 +174,78 @@ function LoginPage() {
                                         color="secondary"
                                     >
                                         Sign in with Google
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                        </form>
+                    </Grid>
+                </Grid>
+
+                <Divider orientation="vertical" flexItem style={{marginLeft: "4vw", marginRight: "4vw"}}>
+                    or
+                </Divider>
+
+                <Grid container spacing={2} justifyContent="center" width="30vw"
+                      style={{minWidth: "200px", maxWidth: "300px"}}
+                >
+                    <Grid item xs={12}>
+                        <Typography variant="h5" align="center" color="secondary">
+                            Register
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <form onSubmit={handleRegisterSubmit}>
+                            <Grid container spacing={2}>
+                                <Grid item xs={12}>
+                                    <TextField
+                                        fullWidth
+                                        placeholder="First Name"
+                                        value={authRegisterCommand.firstName}
+                                        onChange={handleRegisterInputChange}
+                                        name="firstName"
+                                        color="secondary"
+                                    />
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <TextField
+                                        fullWidth
+                                        placeholder="Last Name"
+                                        value={authRegisterCommand.lastName}
+                                        onChange={handleRegisterInputChange}
+                                        name="lastName"
+                                        color="secondary"
+                                    />
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <TextField
+                                        fullWidth
+                                        placeholder="Email"
+                                        value={authRegisterCommand.email}
+                                        onChange={handleRegisterInputChange}
+                                        name="email"
+                                        color="secondary"
+                                    />
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <TextField
+                                        fullWidth
+                                        placeholder="Password"
+                                        type="password"
+                                        value={authRegisterCommand.password}
+                                        onChange={handleRegisterInputChange}
+                                        name="password"
+                                        color="secondary"
+                                    />
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Button
+                                        fullWidth
+                                        variant="contained"
+                                        color="secondary"
+                                        type="submit"
+                                        onClick={handleRegisterSubmit}
+                                    >
+                                        Sign Up
                                     </Button>
                                 </Grid>
                             </Grid>
