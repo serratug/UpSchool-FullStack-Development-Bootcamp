@@ -11,17 +11,18 @@ import Box from "@mui/material/Box";
 import {useContext, useEffect, useState} from "react";
 import {
     OrderGetByUserIdDto,
-    OrderGetByUserIdQuery,
+    OrderGetByUserIdQuery, OrderRemoveCommand,
 } from "../types/OrderTypes.ts";
 import {AppUserContext} from "../context/StateContext.tsx";
 import {styled} from "@mui/material/styles";
 import IconButton from "@mui/material/IconButton";
-import {Visibility} from "@mui/icons-material";
+import {Delete, Visibility} from "@mui/icons-material";
 import ProductsModal from "../components/ProductsModal.tsx";
 import OrderEventsModal from "../components/OrderEventsModal.tsx";
 import { Button } from "@mui/material";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
+import {toast} from "react-toastify";
 
 
 const StyledTableRow = styled(TableRow)(() => ({
@@ -63,6 +64,26 @@ function OrdersPage() {
         setIsOrderEventsModalOpen(false);
         setSelectedOrderId(null);
     };
+
+    const handleRemove = async (orderId: string) => {
+        const orderRemoveCommand:OrderRemoveCommand = {
+            id: orderId
+        }
+
+        try {
+            const response = await api.post("/Orders/Remove", orderRemoveCommand);
+            if(response.status === 200){
+                const updatedOrderList = orderList.filter((order) => order.id !== orderId);
+                setOrderList(updatedOrderList);
+            } else{
+                toast.error(response.statusText);
+            }
+
+        }
+        catch (error){
+            console.log(error);
+        }
+    }
 
 
     useEffect(() => {
@@ -156,6 +177,7 @@ function OrdersPage() {
                                 <TableCell align="right">Found</TableCell>
                                 <TableCell align="right">Events</TableCell>
                                 <TableCell align="right">Products</TableCell>
+                                <TableCell align="right"></TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -167,7 +189,18 @@ function OrdersPage() {
                                     <TableCell component="th" scope="row">
                                         {row.id}
                                     </TableCell>
-                                    <TableCell align="right">{row.createdOn.toString()}</TableCell>
+                                    <TableCell align="right">
+                                        {row.createdOn
+                                            ? new Date(row.createdOn).toLocaleString("tr-TR", {
+                                                year: "numeric",
+                                                month: "numeric",
+                                                day: "numeric",
+                                                hour: "numeric",
+                                                minute: "numeric",
+                                                second: "numeric",
+                                            })
+                                        : "N/A"}
+                                    </TableCell>
                                     <TableCell align="right">{row.productCrawlType}</TableCell>
                                     <TableCell align="right">{row.requestedAmount}</TableCell>
                                     <TableCell align="right">{row.totalFoundAmount}</TableCell>
@@ -182,6 +215,11 @@ function OrdersPage() {
                                             <Visibility />
                                         </IconButton>
                                         <ProductsModal open={isProductsModalOpen} onClose={handleCloseProductsModal} orderId={selectedOrderId ?? ""} />
+                                    </TableCell>
+                                    <TableCell align="right">
+                                        <IconButton color="secondary" onClick={() => handleRemove(row.id)}>
+                                            <Delete />
+                                        </IconButton>
                                     </TableCell>
                                 </StyledTableRow>
                             ))}

@@ -39,3 +39,7 @@ export const ProductAmountChoiceDisplay: Record<ProductAmountChoice, string> = {
     [ProductAmountChoice.All]: 'All',
     [ProductAmountChoice.SpecificAmount]: 'Specific Amount',
 };
+
+export type OrderRemoveCommand = {
+    id: string,
+}
