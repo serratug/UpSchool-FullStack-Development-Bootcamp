@@ -18,6 +18,7 @@ import {styled} from "@mui/material/styles";
 import IconButton from "@mui/material/IconButton";
 import {Visibility} from "@mui/icons-material";
 import ProductsModal from "../components/ProductsModal.tsx";
+import OrderEventsModal from "../components/OrderEventsModal.tsx";
 import { Button } from "@mui/material";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
@@ -38,17 +39,28 @@ function OrdersPage() {
 
     const [orderList, setOrderList] = useState<OrderGetByUserIdDto[]>([]);
 
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isProductsModalOpen, setIsProductsModalOpen] = useState(false);
+    const [isOrderEventsModalOpen, setIsOrderEventsModalOpen] = useState(false);
 
     const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
 
-    const handleOpenModal = (orderId: string) => {
+    const handleOpenProductsModal = (orderId: string) => {
         setSelectedOrderId(orderId);
-        setIsModalOpen(true);
+        setIsProductsModalOpen(true);
     };
 
-    const handleCloseModal = () => {
-        setIsModalOpen(false);
+    const handleCloseProductsModal = () => {
+        setIsProductsModalOpen(false);
+        setSelectedOrderId(null);
+    };
+
+    const handleOpenOrderEventsModal = (orderId: string) => {
+        setSelectedOrderId(orderId);
+        setIsOrderEventsModalOpen(true);
+    };
+
+    const handleCloseOrderEventsModal = () => {
+        setIsOrderEventsModalOpen(false);
         setSelectedOrderId(null);
     };
 
@@ -142,8 +154,8 @@ function OrdersPage() {
                                 <TableCell align="right">Type</TableCell>
                                 <TableCell align="right">Requested</TableCell>
                                 <TableCell align="right">Found</TableCell>
-                                <TableCell align="right">Products</TableCell>
                                 <TableCell align="right">Events</TableCell>
+                                <TableCell align="right">Products</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -160,15 +172,16 @@ function OrdersPage() {
                                     <TableCell align="right">{row.requestedAmount}</TableCell>
                                     <TableCell align="right">{row.totalFoundAmount}</TableCell>
                                     <TableCell align="right">
-                                        <IconButton color="inherit" onClick={() => handleOpenModal(row.id)}>
+                                        <IconButton color="inherit" onClick={() => handleOpenOrderEventsModal(row.id)}>
                                             <Visibility />
                                         </IconButton>
-                                        <ProductsModal open={isModalOpen} onClose={handleCloseModal} orderId={selectedOrderId ?? ""} />
+                                        <OrderEventsModal open={isOrderEventsModalOpen} onClose={handleCloseOrderEventsModal} orderId={selectedOrderId ?? ""} />
                                     </TableCell>
                                     <TableCell align="right">
-                                        <IconButton color="inherit">
+                                        <IconButton color="inherit" onClick={() => handleOpenProductsModal(row.id)}>
                                             <Visibility />
                                         </IconButton>
+                                        <ProductsModal open={isProductsModalOpen} onClose={handleCloseProductsModal} orderId={selectedOrderId ?? ""} />
                                     </TableCell>
                                 </StyledTableRow>
                             ))}
