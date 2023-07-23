@@ -3,7 +3,7 @@ import {AuthLoginCommand, AuthRegisterCommand, LocalJwt} from "../types/AuthType
 import api from "../utils/axiosInstance.ts";
 import {getClaimsFromJwt} from "../utils/jwtHelper.ts";
 import {AppUserContext} from "../context/StateContext.tsx";
-import {toast} from "react-toastify";
+import {toast} from "../components/ToastManager.tsx";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -51,12 +51,25 @@ function LoginPage() {
                 }
 
                 localStorage.setItem("crawler_user",JSON.stringify(localJwt));
+                toast.show({
+                    title: "success",
+                    content: "Successfully signed in.",
+                    duration: 10000,
+                });
                 navigate("/");
             } else{
-                toast.error(response.statusText);
+                toast.show({
+                    title: "error",
+                    content: "error",
+                    duration: 10000,
+                });
             }
         } catch (error) {
-            toast.error("Something went wrong!");
+            toast.show({
+                title: "error",
+                content: "error",
+                duration: 10000,
+            });
         }
 
     }
@@ -69,12 +82,24 @@ function LoginPage() {
             const response = await api.post("/Authentication/Register", authRegisterCommand);
 
             if(response.status === 200){
-                navigate("/");
+                toast.show({
+                    title: "success",
+                    content: "Successfully registered.",
+                    duration: 10000,
+                });
             } else{
-                toast.error(response.statusText);
+                toast.show({
+                    title: "error",
+                    content: "Error registering.",
+                    duration: 10000,
+                });
             }
         } catch (error) {
-            toast.error("Something went wrong!");
+            toast.show({
+                title: "error",
+                content: "error",
+                duration: 10000,
+            });
         }
 
     }
