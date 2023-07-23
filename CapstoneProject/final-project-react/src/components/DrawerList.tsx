@@ -66,15 +66,6 @@ export default function DrawerList() {
                 </ListItemButton>
             </ListItem>
 
-            <ListItem key='Users' disablePadding>
-                <ListItemButton onClick={handleUsersClick}>
-                    <ListItemIcon>
-                        <People/>
-                    </ListItemIcon>
-                    <ListItemText primary='Users' />
-                </ListItemButton>
-            </ListItem>
-
             <Divider/>
 
             <ListItem key='Notifications' disablePadding>

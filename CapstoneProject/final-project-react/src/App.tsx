@@ -22,7 +22,6 @@ import OrdersPage from "./pages/OrdersPage.tsx";
 import LoginPage from "./pages/LoginPage.tsx";
 import SettingsPage from "./pages/SettingsPage.tsx";
 import NotificationsPage from "./pages/NotificationsPage.tsx";
-import UsersPage from "./pages/UsersPage.tsx";
 import {AppUserContext} from "./context/StateContext.tsx";
 import {LocalUser} from "./types/AuthTypes.ts";
 import CrawlerLiveLogsPage from "./pages/CrawlerLiveLogsPage.tsx";
@@ -147,7 +146,7 @@ function App() {
             <SignalRProvider>
                 <ThemeProvider theme={theme}>
 
-                    <Box sx={{ display: 'flex' }}>
+                    <Box sx={{ display: 'flex', alignItems: 'flex-start', height: '80vh', pt: 2}}>
 
                         <CssBaseline />
                         <AppBar position="fixed" open={open}>
@@ -226,7 +225,6 @@ function App() {
                                         <CrawlerLiveLogsPage />
                                     </ProtectedRoute>
                                 } />
-                                <Route path="/users" element={<UsersPage />} />
                                 <Route path="/notifications" element={<NotificationsPage />} />
                                 <Route path="/settings" element={
                                     <ProtectedRoute>
