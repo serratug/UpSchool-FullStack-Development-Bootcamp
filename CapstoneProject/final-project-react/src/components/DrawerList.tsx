@@ -2,7 +2,7 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
-import {Dashboard, Notifications, Settings, ShoppingCart, Terminal} from "@mui/icons-material";
+import {Dashboard, Settings, ShoppingCart, Terminal} from "@mui/icons-material";
 import ListItemText from "@mui/material/ListItemText";
 import Divider from "@mui/material/Divider";
 import { useNavigate } from "react-router-dom";
@@ -17,10 +17,6 @@ export default function DrawerList() {
 
     const handleOrdersClick = () => {
         navigate("/orders");
-    };
-
-    const handleNotificationsClick = () => {
-        navigate("/notifications");
     };
 
     const handleSettingsClick = () => {
@@ -59,17 +55,6 @@ export default function DrawerList() {
                         <Terminal/>
                     </ListItemIcon>
                     <ListItemText primary='Logs' />
-                </ListItemButton>
-            </ListItem>
-
-            <Divider/>
-
-            <ListItem key='Notifications' disablePadding>
-                <ListItemButton onClick={handleNotificationsClick}>
-                    <ListItemIcon>
-                        <Notifications/>
-                    </ListItemIcon>
-                    <ListItemText primary='Notifications' />
                 </ListItemButton>
             </ListItem>
 
