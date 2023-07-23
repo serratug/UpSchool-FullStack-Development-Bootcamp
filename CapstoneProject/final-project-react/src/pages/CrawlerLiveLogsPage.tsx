@@ -6,6 +6,8 @@ import ListItem from "@mui/material/ListItem";
 import {Log} from "../types/LogTypes.ts";
 import {SignalRContext} from "../context/SignalRContext.tsx";
 import '../App.css'
+import {OrderStatus, OrderStatusDisplay} from "../types/OrderEventTypes.ts";
+import {toast} from "../components/ToastManager.tsx";
 
 
 function CrawlerLiveLogsPage() {
@@ -14,11 +16,30 @@ function CrawlerLiveLogsPage() {
 
     const [logs, setLogs] = useState<Log[]>([]);
 
+    const { notificationHubConnection } = useContext(SignalRContext);
+
 
     useEffect(() => {
         (async () => {
             logHubConnection?.on("NewLogAdded", (log: Log) => {
+                console.log(log.message);
                 setLogs((prevLogs) => [...prevLogs, log]);
+            });
+
+            let toasterTitle = "";
+
+            notificationHubConnection?.on("NewNotificationAdded", (status: OrderStatus) => {
+
+                if (status === OrderStatus.CrawlingCompleted)
+                    toasterTitle = "success";
+                else
+                    toasterTitle = "error";
+
+                toast.show({
+                    title: toasterTitle,
+                    content: OrderStatusDisplay[status],
+                    duration: 10000,
+                });
             });
 
             return;

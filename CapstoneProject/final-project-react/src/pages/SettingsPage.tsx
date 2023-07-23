@@ -7,6 +7,7 @@ import * as React from "react";
 import api from "../utils/axiosInstance.ts";
 import {useEffect, useState} from "react";
 import {NotificationSettingsDto} from "../types/NotificationTypes.ts";
+import {toast} from "../components/ToastManager.tsx";
 
 
 function SettingsPage() {
@@ -42,10 +43,29 @@ function SettingsPage() {
         try {
             console.log(notificationSettings);
             const response = await api.put("/NotificationSettings/Update", notificationSettings);
-            console.log(response.data);
+            if (response.status === 200){
+                toast.show({
+                    title: "success",
+                    content: "Your settings successfully updated.",
+                    duration: 10000,
+                });
+            }
+            else {
+                toast.show({
+                    title: "error",
+                    content: "Error updating settings.",
+                    duration: 10000,
+                });
+            }
+
         }
         catch (error){
             console.log(error);
+            toast.show({
+                title: "error",
+                content: "Unexpected error.",
+                duration: 10000,
+            });
         }
     };
 
