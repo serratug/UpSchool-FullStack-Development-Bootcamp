@@ -105,7 +105,7 @@ function OrdersPage() {
 
         fetchOrders();
 
-    });
+    }, [appUser]);
 
     // Export the table data to Excel, excluding "Products" and "Events" columns
     const handleExportToExcel = () => {
@@ -208,13 +208,11 @@ function OrdersPage() {
                                         <IconButton color="secondary" onClick={() => handleOpenOrderEventsModal(row.id)}>
                                             <Visibility />
                                         </IconButton>
-                                        <OrderEventsModal open={isOrderEventsModalOpen} onClose={handleCloseOrderEventsModal} orderId={selectedOrderId ?? ""} />
                                     </TableCell>
                                     <TableCell align="right">
                                         <IconButton color="secondary" onClick={() => handleOpenProductsModal(row.id)}>
                                             <Visibility />
                                         </IconButton>
-                                        <ProductsModal open={isProductsModalOpen} onClose={handleCloseProductsModal} orderId={selectedOrderId ?? ""} />
                                     </TableCell>
                                     <TableCell align="right">
                                         <IconButton color="secondary" onClick={() => handleRemove(row.id)}>
@@ -227,6 +225,8 @@ function OrdersPage() {
                     </Table>
                 </React.Fragment>
             </Paper>
+            <OrderEventsModal open={isOrderEventsModalOpen} onClose={handleCloseOrderEventsModal} orderId={selectedOrderId ?? ""} />
+            <ProductsModal open={isProductsModalOpen} onClose={handleCloseProductsModal} orderId={selectedOrderId ?? ""} />
         </Box>
     );
 }

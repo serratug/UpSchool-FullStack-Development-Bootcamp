@@ -8,6 +8,7 @@ import {useEffect, useState} from "react";
 import api from "../utils/axiosInstance.ts";
 import {Table, TableBody, TableCell, TableHead, TableRow} from "@mui/material";
 import {PaginatedList} from "../types/GenericTypes.ts";
+import CircularProgress from '@mui/material/CircularProgress';
 
 const style = {
     position: 'absolute',
@@ -27,11 +28,12 @@ type ModalProps = {
     orderId: string;
 };
 
-const ProductsModal: React.FC<ModalProps> = ({ open, onClose, orderId }) => {
+const ProductsModal: React.FC<ModalProps> = React.memo(({ open, onClose, orderId }) => {
 
     const [paginatedProducts, setPaginatedProducts] = useState<PaginatedList<ProductGetAllDto> | null>(null);
     const [currentPage, setCurrentPage] = useState<number>(1);
     const pageSize = 6;
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (open && orderId) {
@@ -48,6 +50,8 @@ const ProductsModal: React.FC<ModalProps> = ({ open, onClose, orderId }) => {
 
         console.log(event?.type);
 
+        setLoading(true);
+
         setCurrentPage(page);
 
         const productGetAllQuery: ProductGetAllQuery = {
@@ -61,6 +65,8 @@ const ProductsModal: React.FC<ModalProps> = ({ open, onClose, orderId }) => {
             setPaginatedProducts(response.data);
         } catch (error) {
             console.log(error);
+        }finally {
+            setLoading(false);
         }
     };
 
@@ -80,61 +86,69 @@ const ProductsModal: React.FC<ModalProps> = ({ open, onClose, orderId }) => {
             aria-describedby="modal-modal-description"
         >
             <Box sx={style}>
-                <Typography id="modal-modal-title" variant="h6" component="h2">
-                    Products of Order {orderId}
-                </Typography>
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell></TableCell>
-                            <TableCell>Name</TableCell>
-                            <TableCell>Price</TableCell>
-                            <TableCell>Sale Price</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {paginatedProducts?.items.map((product, index) => (
-                            <TableRow key={index}>
-                                <TableCell style={{backgroundColor: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-                                    <img
-                                        alt=""
-                                        src={product.picture}
-                                        style={{ height: '4em' }}
-                                    />
-                                </TableCell>
-                                <TableCell style={styleForPrice(product.isOnSale)}>
-                                    {product.name}
-                                </TableCell>
-                                <TableCell style={styleForPrice(product.isOnSale)}>
-                                    {product.price.toLocaleString('en-US', {
-                                        style: 'currency',
-                                        currency: 'USD',
-                                    })}
-                                </TableCell>
-                                <TableCell style={styleForSalePrice(product.isOnSale)}>
-                                    {product.isOnSale
-                                        ? product.salePrice.toLocaleString('en-US', {
-                                            style: 'currency',
-                                            currency: 'USD',
-                                        })
-                                        : '-'}
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-                {paginatedProducts && (
-                    <Pagination
-                        count={paginatedProducts.totalPages}
-                        page={currentPage}
-                        onChange={(event, page) => handleLoadProducts(event, page)}
-                        color={"secondary"}
-                    />
+                {loading ? ( // Yükleniyor durumuna göre yüklenme ekranını veya içeriği göster
+                    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%" }}>
+                        <CircularProgress color="secondary" />
+                    </div>
+                ) : (
+                    <>
+                        <Typography id="modal-modal-title" variant="h6" component="h2">
+                            Products of Order {orderId}
+                        </Typography>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell></TableCell>
+                                    <TableCell>Name</TableCell>
+                                    <TableCell>Price</TableCell>
+                                    <TableCell>Sale Price</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {paginatedProducts?.items.map((product, index) => (
+                                    <TableRow key={index}>
+                                        <TableCell style={{backgroundColor: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                                            <img
+                                                alt=""
+                                                src={product.picture}
+                                                style={{ height: '4em' }}
+                                            />
+                                        </TableCell>
+                                        <TableCell style={styleForPrice(product.isOnSale)}>
+                                            {product.name}
+                                        </TableCell>
+                                        <TableCell style={styleForPrice(product.isOnSale)}>
+                                            {product.price.toLocaleString('en-US', {
+                                                style: 'currency',
+                                                currency: 'USD',
+                                            })}
+                                        </TableCell>
+                                        <TableCell style={styleForSalePrice(product.isOnSale)}>
+                                            {product.isOnSale
+                                                ? product.salePrice.toLocaleString('en-US', {
+                                                    style: 'currency',
+                                                    currency: 'USD',
+                                                })
+                                                : '-'}
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                        {paginatedProducts && (
+                            <Pagination
+                                count={paginatedProducts.totalPages}
+                                page={currentPage}
+                                onChange={(event, page) => handleLoadProducts(event, page)}
+                                color={"secondary"}
+                            />
+                        )}
+                    </>
                 )}
             </Box>
         </Modal>
     );
-};
+});
 
 export default ProductsModal;
 
