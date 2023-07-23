@@ -6,11 +6,18 @@ import CreateOrder from "../components/CreateOrder.tsx";
 import Statistics from "../components/Statistics.tsx";
 import {useContext, useEffect} from "react";
 import {SignalRContext} from "../context/SignalRContext.tsx";
+import {OrderContext} from "../context/OrderContext.tsx";
 
 
 function DashboardPage() {
 
     const { logHubConnection } = useContext(SignalRContext);
+
+    const { orderList } = useContext(OrderContext);
+
+
+    const sumOfTotalFoundAmount = orderList.reduce((sum, order) => sum + order.totalFoundAmount, 0);
+
 
     useEffect(() => {
         (async () => {
@@ -18,61 +25,13 @@ function DashboardPage() {
 
             return;
         })();
-    }, []);
+    }, [logHubConnection, orderList]);
 
     return(
 
         <Grid container spacing={3}>
 
-            <Grid item xs={12} lg={3}>
-                <Paper
-                    sx={{
-                        p: 2,
-                        display: 'flex',
-                        flexDirection: 'column'
-                    }}
-                >
-                    <Statistics title="Total Orders" unit="Orders">3</Statistics>
-                </Paper>
-            </Grid>
-
-            <Grid item xs={12} lg={3}>
-                <Paper
-                    sx={{
-                        p: 2,
-                        display: 'flex',
-                        flexDirection: 'column'
-                    }}
-                >
-                    <Statistics title="Crawled Products" unit="Products">113</Statistics>
-                </Paper>
-            </Grid>
-
-            <Grid item xs={12} lg={3}>
-                <Paper
-                    sx={{
-                        p: 2,
-                        display: 'flex',
-                        flexDirection: 'column'
-                    }}
-                >
-                    <Statistics title="On Discount" unit="Products">70</Statistics>
-                </Paper>
-            </Grid>
-
-            <Grid item xs={12} lg={3}>
-                <Paper
-                    sx={{
-                        p: 2,
-                        display: 'flex',
-                        flexDirection: 'column'
-                    }}
-                >
-                    <Statistics title="Non Discount" unit="Products">43</Statistics>
-                </Paper>
-            </Grid>
-
-            <Grid item xs={12} md={8} lg={4}>
+            <Grid item xs={12} md={8} lg={4} style={{ height: "100%" }}>
                 <Paper
                     sx={{
                         p: 2,
@@ -84,29 +43,57 @@ function DashboardPage() {
                     <CreateOrder />
                 </Paper>
             </Grid>
+            
+            <Grid container spacing={3} xs={8} sx={{pt: 3, pl: 3}}>
+                <Grid item xs={12} lg={6}>
+                    <Paper
+                        sx={{
+                            p: 2,
+                            display: 'flex',
+                            flexDirection: 'column'
+                        }}
+                    >
+                        <Statistics title="Total Orders" unit="Orders">{orderList.length}</Statistics>
+                    </Paper>
+                </Grid>
 
-            <Grid item xs={12} md={4} lg={8}>
+                <Grid item xs={12} lg={6}>
+                    <Paper
+                        sx={{
+                            p: 2,
+                            display: 'flex',
+                            flexDirection: 'column'
+                        }}
+                    >
+                        <Statistics title="Crawled Products" unit="Products">{sumOfTotalFoundAmount}</Statistics>
+                    </Paper>
+                </Grid>
+
+                <Grid item xs={12} lg={12}>
+                    <Paper
+                        sx={{
+                            p: 2,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            textAlign: 'center',
+                            height: 141,
+                        }}
+                    >
+                        "Spiders spin webs of knowledge, bringing you digital treasures untold." 🕸️
+                    </Paper>
+                </Grid>
+            </Grid>
+
+            <Grid item xs={12} sx={{pr: 3}}>
                 <Paper
                     sx={{
                         p: 2,
                         display: 'flex',
-                        flexDirection: 'column',
-                        height: 290,
+                        flexDirection: 'column'
                     }}
                 >
                     <RecentOrders />
-                </Paper>
-            </Grid>
-
-            <Grid item xs={12}>
-                <Paper
-                    sx={{
-                    p: 2,
-                    display: 'flex',
-                    flexDirection: 'column'
-                    }}
-                >
-                    3
                 </Paper>
             </Grid>
 

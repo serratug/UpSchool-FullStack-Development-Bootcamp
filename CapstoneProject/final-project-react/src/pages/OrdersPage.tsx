@@ -10,19 +10,22 @@ import TableBody from "@mui/material/TableBody";
 import Box from "@mui/material/Box";
 import {useContext, useEffect, useState} from "react";
 import {
-    OrderGetByUserIdDto,
-    OrderGetByUserIdQuery, OrderRemoveCommand,
+    OrderGetByUserIdQuery,
+    OrderRemoveCommand,
+    ProductAmountChoice, ProductAmountChoiceDisplay,
+    ProductCrawlTypeDisplay
 } from "../types/OrderTypes.ts";
 import {AppUserContext} from "../context/StateContext.tsx";
 import {styled} from "@mui/material/styles";
 import IconButton from "@mui/material/IconButton";
-import {Delete, Visibility} from "@mui/icons-material";
+import {DeleteOutline, Visibility} from "@mui/icons-material";
 import ProductsModal from "../components/ProductsModal.tsx";
 import OrderEventsModal from "../components/OrderEventsModal.tsx";
 import { Button } from "@mui/material";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import {toast} from "react-toastify";
+import {OrderContext} from "../context/OrderContext.tsx";
 
 
 const StyledTableRow = styled(TableRow)(() => ({
@@ -38,7 +41,7 @@ function OrdersPage() {
 
     const { appUser } = useContext(AppUserContext);
 
-    const [orderList, setOrderList] = useState<OrderGetByUserIdDto[]>([]);
+    const { orderList, setOrderList } = useContext(OrderContext);
 
     const [isProductsModalOpen, setIsProductsModalOpen] = useState(false);
     const [isOrderEventsModalOpen, setIsOrderEventsModalOpen] = useState(false);
@@ -141,7 +144,7 @@ function OrdersPage() {
                 alignItems: "flex-start", // Align content to the top
                 color: "secondary",
                 height: "max-content",
-                pt: 8,
+                pt: 0,
             }}
         >
             <Paper
@@ -171,13 +174,13 @@ function OrdersPage() {
                         <TableHead>
                             <TableRow>
                                 <TableCell>Id</TableCell>
-                                <TableCell align="right">Date</TableCell>
-                                <TableCell align="right">Type</TableCell>
-                                <TableCell align="right">Requested</TableCell>
-                                <TableCell align="right">Found</TableCell>
-                                <TableCell align="right">Events</TableCell>
-                                <TableCell align="right">Products</TableCell>
-                                <TableCell align="right"></TableCell>
+                                <TableCell align="center">Date</TableCell>
+                                <TableCell align="center">Type</TableCell>
+                                <TableCell align="center">Requested</TableCell>
+                                <TableCell align="center">Found</TableCell>
+                                <TableCell align="center">Events</TableCell>
+                                <TableCell align="center">Products</TableCell>
+                                <TableCell align="center"></TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -189,7 +192,7 @@ function OrdersPage() {
                                     <TableCell component="th" scope="row">
                                         {row.id}
                                     </TableCell>
-                                    <TableCell align="right">
+                                    <TableCell align="center">
                                         {row.createdOn
                                             ? new Date(row.createdOn).toLocaleString("tr-TR", {
                                                 year: "numeric",
@@ -201,22 +204,26 @@ function OrdersPage() {
                                             })
                                         : "N/A"}
                                     </TableCell>
-                                    <TableCell align="right">{row.productCrawlType}</TableCell>
-                                    <TableCell align="right">{row.requestedAmount}</TableCell>
-                                    <TableCell align="right">{row.totalFoundAmount}</TableCell>
-                                    <TableCell align="right">
+                                    <TableCell align="center">{ProductCrawlTypeDisplay[row.productCrawlType]}</TableCell>
+                                    {(row.productAmountChoice === ProductAmountChoice.All) ?
+                                        <TableCell align="center">{ProductAmountChoiceDisplay[row.productAmountChoice]}</TableCell>
+                                        :
+                                        <TableCell align="center">{row.requestedAmount}</TableCell>
+                                    }
+                                    <TableCell align="center">{row.totalFoundAmount}</TableCell>
+                                    <TableCell align="center">
                                         <IconButton color="secondary" onClick={() => handleOpenOrderEventsModal(row.id)}>
                                             <Visibility />
                                         </IconButton>
                                     </TableCell>
-                                    <TableCell align="right">
+                                    <TableCell align="center">
                                         <IconButton color="secondary" onClick={() => handleOpenProductsModal(row.id)}>
                                             <Visibility />
                                         </IconButton>
                                     </TableCell>
-                                    <TableCell align="right">
-                                        <IconButton color="secondary" onClick={() => handleRemove(row.id)}>
-                                            <Delete />
+                                    <TableCell align="center">
+                                        <IconButton color="error" onClick={() => handleRemove(row.id)}>
+                                            <DeleteOutline />
                                         </IconButton>
                                     </TableCell>
                                 </StyledTableRow>

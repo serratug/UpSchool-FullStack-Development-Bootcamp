@@ -28,11 +28,16 @@ import CrawlerLiveLogsPage from "./pages/CrawlerLiveLogsPage.tsx";
 import {SignalRProvider} from "./context/SignalRContext.tsx";
 import SocialLogin from "./pages/SocialLogin.tsx";
 import ProtectedRoute from "./components/ProtectedRoute.tsx";
+import {OrderContext} from "./context/OrderContext.tsx";
+import {OrderGetByUserIdDto} from "./types/OrderTypes.ts";
 
 
 const theme = createTheme({
     palette: {
         mode: 'dark',
+        error: {
+            main: '#b71c1c',
+        }
         // Customize other palette colors if needed
     },
     // Add any other necessary theme configurations
@@ -116,6 +121,8 @@ function App() {
 
     const [appUser, setAppUser] = useState<LocalUser | undefined>(undefined);
 
+    const [orderList, setOrderList] = useState<OrderGetByUserIdDto[]>([]);
+
     const [open, setOpen] = React.useState(false);
 
     const handleDrawerOpen = () => {
@@ -144,102 +151,104 @@ function App() {
     return (
         <AppUserContext.Provider value={{appUser, setAppUser}}>
             <SignalRProvider>
-                <ThemeProvider theme={theme}>
+                <OrderContext.Provider value={{orderList, setOrderList}}>
+                    <ThemeProvider theme={theme}>
 
-                    <Box sx={{ display: 'flex', alignItems: 'flex-start', height: '80vh', pt: 2}}>
+                        <Box sx={{ display: 'flex', alignItems: 'flex-start', height: '80vh', pt: 2}}>
 
-                        <CssBaseline />
-                        <AppBar position="fixed" open={open}>
-                            <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <div style={{ display: 'flex', alignItems: 'center' }}>
-                                    <IconButton
-                                        color="inherit"
-                                        aria-label="open drawer"
-                                        onClick={handleDrawerOpen}
-                                        edge="start"
-                                        sx={{
-                                            marginRight: 5,
-                                            ...(open && { display: 'none' }),
-                                        }}
-                                    >
-                                        <MenuIcon />
+                            <CssBaseline />
+                            <AppBar position="fixed" open={open}>
+                                <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                                        <IconButton
+                                            color="inherit"
+                                            aria-label="open drawer"
+                                            onClick={handleDrawerOpen}
+                                            edge="start"
+                                            sx={{
+                                                marginRight: 5,
+                                                ...(open && { display: 'none' }),
+                                            }}
+                                        >
+                                            <MenuIcon />
+                                        </IconButton>
+                                        <Typography variant="h6" noWrap component="div">
+                                            Crawler
+                                        </Typography>
+                                    </div>
+                                    <div>
+                                        {!appUser &&
+                                            <IconButton color="inherit" onClick={handleLoginOnClick}>
+                                                <Typography variant="h6" component="h6" sx={{ marginRight: 1 }}>
+                                                    Login
+                                                </Typography>
+                                                <Login />
+                                            </IconButton>
+                                        }
+                                        {appUser &&
+                                            <IconButton color="inherit" onClick={handleLogout}>
+                                                <Typography variant="h6" component="h6" sx={{ marginRight: 1 }}>
+                                                    Hello {appUser.firstName}
+                                                </Typography>
+                                                <Logout />
+                                            </IconButton>
+                                        }
+                                    </div>
+                                </Toolbar>
+                            </AppBar>
+                            <Drawer variant="permanent" open={open}>
+                                <DrawerHeader>
+                                    <IconButton onClick={handleDrawerClose}>
+                                        {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
                                     </IconButton>
-                                    <Typography variant="h6" noWrap component="div">
-                                        Crawler
-                                    </Typography>
-                                </div>
-                                <div>
-                                    {!appUser &&
-                                        <IconButton color="inherit" onClick={handleLoginOnClick}>
-                                            <Typography variant="h6" component="h6" sx={{ marginRight: 1 }}>
-                                                Login
-                                            </Typography>
-                                            <Login />
-                                        </IconButton>
-                                    }
-                                    {appUser &&
-                                        <IconButton color="inherit" onClick={handleLogout}>
-                                            <Typography variant="h6" component="h6" sx={{ marginRight: 1 }}>
-                                                Hello {appUser.firstName}
-                                            </Typography>
-                                            <Logout />
-                                        </IconButton>
-                                    }
-                                </div>
-                            </Toolbar>
-                        </AppBar>
-                        <Drawer variant="permanent" open={open}>
-                            <DrawerHeader>
-                                <IconButton onClick={handleDrawerClose}>
-                                    {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-                                </IconButton>
-                            </DrawerHeader>
-                            <Divider />
-                            <DrawerList />
+                                </DrawerHeader>
+                                <Divider />
+                                <DrawerList />
 
-                        </Drawer>
-                        <Box component="main"
-                             sx={{
-                                 width: "max-content",
-                                 flexGrow: 1,
-                                 p: 0,
-                                 m: 0,
-                                 alignItems: "flex-start",
-                                 justifyContent: "flex-start",
-                            }}
-                        >
+                            </Drawer>
+                            <Box component="main"
+                                 sx={{
+                                     width: "max-content",
+                                     flexGrow: 1,
+                                     p: 0,
+                                     m: 0,
+                                     alignItems: "flex-start",
+                                     justifyContent: "flex-start",
+                                 }}
+                            >
 
-                            <Routes>
-                                <Route path="/" element={
-                                    <ProtectedRoute>
-                                        <DashboardPage />
-                                    </ProtectedRoute>
-                                } />
-                                <Route path="/orders" element={
-                                    <ProtectedRoute>
-                                        <OrdersPage />
-                                    </ProtectedRoute>
-                                } />
-                                <Route path="/crawlerlivelogs" element={
-                                    <ProtectedRoute>
-                                        <CrawlerLiveLogsPage />
-                                    </ProtectedRoute>
-                                } />
-                                <Route path="/notifications" element={<NotificationsPage />} />
-                                <Route path="/settings" element={
-                                    <ProtectedRoute>
-                                        <SettingsPage />
-                                    </ProtectedRoute>
-                                } />
-                                <Route path="/login" element={<LoginPage />} />
-                                <Route path="/social-login" element={<SocialLogin />} />
-                            </Routes>
+                                <Routes>
+                                    <Route path="/" element={
+                                        <ProtectedRoute>
+                                            <DashboardPage />
+                                        </ProtectedRoute>
+                                    } />
+                                    <Route path="/orders" element={
+                                        <ProtectedRoute>
+                                            <OrdersPage />
+                                        </ProtectedRoute>
+                                    } />
+                                    <Route path="/crawlerlivelogs" element={
+                                        <ProtectedRoute>
+                                            <CrawlerLiveLogsPage />
+                                        </ProtectedRoute>
+                                    } />
+                                    <Route path="/notifications" element={<NotificationsPage />} />
+                                    <Route path="/settings" element={
+                                        <ProtectedRoute>
+                                            <SettingsPage />
+                                        </ProtectedRoute>
+                                    } />
+                                    <Route path="/login" element={<LoginPage />} />
+                                    <Route path="/social-login" element={<SocialLogin />} />
+                                </Routes>
+
+                            </Box>
 
                         </Box>
 
-                    </Box>
-
-                </ThemeProvider>
+                    </ThemeProvider>
+                </OrderContext.Provider>
             </SignalRProvider>
         </AppUserContext.Provider>
     )
