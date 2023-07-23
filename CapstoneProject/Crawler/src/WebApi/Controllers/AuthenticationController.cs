@@ -89,7 +89,7 @@ public class AuthenticationController : ApiControllerBase
 
         var query = await formContent.ReadAsStringAsync(cancellationToken);
 
-        var redirectUrl = $"http://127.0.0.1:5173/social-login?{query}";
+        var redirectUrl = $"http://localhost:5173/social-login?{query}";
 
         return Redirect(redirectUrl);
     }

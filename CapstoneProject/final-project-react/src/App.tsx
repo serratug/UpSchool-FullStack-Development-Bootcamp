@@ -9,6 +9,7 @@ import {AppBarProps as MuiAppBarProps} from "@mui/material/AppBar/AppBar";
 import MuiAppBar from "@mui/material/AppBar";
 import MuiDrawer from "@mui/material/Drawer";
 import * as React from "react";
+import {useState} from "react";
 import DrawerList from "./components/DrawerList.tsx";
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -24,9 +25,10 @@ import NotificationsPage from "./pages/NotificationsPage.tsx";
 import UsersPage from "./pages/UsersPage.tsx";
 import {AppUserContext} from "./context/StateContext.tsx";
 import {LocalUser} from "./types/AuthTypes.ts";
-import {useState} from "react";
 import CrawlerLiveLogsPage from "./pages/CrawlerLiveLogsPage.tsx";
 import {SignalRProvider} from "./context/SignalRContext.tsx";
+import SocialLogin from "./pages/SocialLogin.tsx";
+
 
 const theme = createTheme({
     palette: {
@@ -148,7 +150,7 @@ function App() {
 
                         <CssBaseline />
                         <AppBar position="fixed" open={open}>
-                            <Toolbar sx={{ displax: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                 <div style={{ display: 'flex', alignItems: 'center' }}>
                                     <IconButton
                                         color="inherit"
@@ -177,6 +179,9 @@ function App() {
                                     }
                                     {appUser &&
                                         <IconButton color="inherit" onClick={handleLogout}>
+                                            <Typography variant="h6" component="h6" sx={{ marginRight: 1 }}>
+                                                Hello {appUser.firstName}
+                                            </Typography>
                                             <Logout />
                                         </IconButton>
                                     }
@@ -211,6 +216,7 @@ function App() {
                                 <Route path="/notifications" element={<NotificationsPage />} />
                                 <Route path="/settings" element={<SettingsPage />} />
                                 <Route path="/login" element={<LoginPage />} />
+                                <Route path="/social-login" element={<SocialLogin />} />
                                 <Route path="/crawlerlivelogs" element={<CrawlerLiveLogsPage />} />
                             </Routes>
 
