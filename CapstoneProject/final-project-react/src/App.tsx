@@ -21,7 +21,6 @@ import {Route, Routes, useNavigate} from "react-router-dom";
 import OrdersPage from "./pages/OrdersPage.tsx";
 import LoginPage from "./pages/LoginPage.tsx";
 import SettingsPage from "./pages/SettingsPage.tsx";
-import NotificationsPage from "./pages/NotificationsPage.tsx";
 import {AppUserContext} from "./context/StateContext.tsx";
 import {LocalUser} from "./types/AuthTypes.ts";
 import CrawlerLiveLogsPage from "./pages/CrawlerLiveLogsPage.tsx";
@@ -233,7 +232,6 @@ function App() {
                                             <CrawlerLiveLogsPage />
                                         </ProtectedRoute>
                                     } />
-                                    <Route path="/notifications" element={<NotificationsPage />} />
                                     <Route path="/settings" element={
                                         <ProtectedRoute>
                                             <SettingsPage />
