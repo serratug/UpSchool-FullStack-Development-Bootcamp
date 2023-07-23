@@ -28,6 +28,7 @@ import {LocalUser} from "./types/AuthTypes.ts";
 import CrawlerLiveLogsPage from "./pages/CrawlerLiveLogsPage.tsx";
 import {SignalRProvider} from "./context/SignalRContext.tsx";
 import SocialLogin from "./pages/SocialLogin.tsx";
+import ProtectedRoute from "./components/ProtectedRoute.tsx";
 
 
 const theme = createTheme({
@@ -210,14 +211,30 @@ function App() {
                         >
 
                             <Routes>
-                                <Route path="/" element={<DashboardPage />} />
-                                <Route path="/orders" element={<OrdersPage />} />
+                                <Route path="/" element={
+                                    <ProtectedRoute>
+                                        <DashboardPage />
+                                    </ProtectedRoute>
+                                } />
+                                <Route path="/orders" element={
+                                    <ProtectedRoute>
+                                        <OrdersPage />
+                                    </ProtectedRoute>
+                                } />
+                                <Route path="/crawlerlivelogs" element={
+                                    <ProtectedRoute>
+                                        <CrawlerLiveLogsPage />
+                                    </ProtectedRoute>
+                                } />
                                 <Route path="/users" element={<UsersPage />} />
                                 <Route path="/notifications" element={<NotificationsPage />} />
-                                <Route path="/settings" element={<SettingsPage />} />
+                                <Route path="/settings" element={
+                                    <ProtectedRoute>
+                                        <SettingsPage />
+                                    </ProtectedRoute>
+                                } />
                                 <Route path="/login" element={<LoginPage />} />
                                 <Route path="/social-login" element={<SocialLogin />} />
-                                <Route path="/crawlerlivelogs" element={<CrawlerLiveLogsPage />} />
                             </Routes>
 
                         </Box>
