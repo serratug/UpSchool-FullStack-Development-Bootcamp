@@ -12,6 +12,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<Product> Products { get; set; }
     public DbSet<Order> Orders { get; set; }
     public DbSet<OrderEvent> OrderEvents { get; set; }
+    public DbSet<Notification> Notifications { get; set; }
     public DbSet<NotificationSettings> NotificationSettings { get; set; }
     
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options):base(options)
